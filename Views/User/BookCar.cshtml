@@ -1,0 +1,353 @@
+@model CarRentalSystem.Models.Car
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<link href="~/css/bookcar.css"
+      rel="stylesheet" />
+
+<div class="container py-4">
+
+    <div class="row">
+
+        <!-- CAR DETAILS -->
+
+        <div class="col-lg-7">
+
+            <div class="booking-card">
+
+                <div class="card-body">
+
+                    @if (Model.CarImage != null)
+                    {
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.CarImage!)"
+                             class="img-fluid rounded mb-4"
+                             style="height:350px;width:100%;object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <img src="https://via.placeholder.com/700x350?text=No+Image"
+                             class="img-fluid rounded mb-4" />
+                    }
+
+                    <h2 class="fw-bold">
+
+                        @Model.CarName
+
+                    </h2>
+
+                    <h5 class="text-muted mb-4">
+
+                        @Model.CarModel
+
+                    </h5>
+
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+
+                            <div class="info-box">
+
+                                <h6>
+
+                                    Fuel Type
+
+                                </h6>
+
+                                <strong>
+
+                                    @Model.FuelType
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+
+                            <div class="info-box">
+
+                                <h6>
+
+                                    Transmission
+
+                                </h6>
+
+                                <strong>
+
+                                    @Model.Transmission
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+
+                            <div class="info-box">
+
+                                <h6>
+
+                                    Daily Rent
+
+                                </h6>
+
+                                <strong class="text-success">
+
+                                    ₹ @Model.PricePerDay
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="feature-list">
+
+                        <div>✓ Instant Confirmation</div>
+
+                        <div>✓ Premium Support</div>
+
+                        <div>✓ Secure Stripe Payment</div>
+
+                        <div>✓ Verified Vehicle</div>
+
+                    </div>
+                    <div class="pickup-location-box">
+
+                        <h4>
+                            <i class="fa fa-shield-halved text-primary"></i>
+                            Pickup Station Info
+                        </h4>
+
+                        <div class="location-info">
+                            <strong>
+                                @(string.IsNullOrEmpty(Model.PickupLocation) ? "Verified EliteCar Station Hub" : Model.PickupLocation)
+                            </strong>
+                        </div>
+
+                        <p class="text-muted small mt-2 mb-0" style="line-height: 1.5;">
+                            <i class="fa fa-lock me-1 text-primary"></i> Exact pickup address, live navigation directions, and station contact will be unlocked and displayed on your booking receipt immediately after confirmation.
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BOOKING SUMMARY -->
+
+        <div class="col-lg-5">
+
+            <div class="summary-card">
+
+                <div class="card-header text-white">
+
+                    <h4 class="mb-1">
+
+                        Booking Summary
+
+                    </h4>
+
+                    <p class="summary-subtitle">
+
+                        Secure booking powered by Stripe
+
+                    </p>
+
+                </div>
+
+                <div class="card-body">
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+
+                            @ViewBag.Error
+
+                        </div>
+                    }
+
+                    <form method="post"
+                          asp-action="BookCar">
+
+                        <input type="hidden"
+                               name="CarId"
+                               value="@Model.Id" />
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Pickup Date
+
+                            </label>
+
+                            <input type="date"
+                                   id="StartDate"
+                                   name="StartDate"
+                                   class="form-control"
+                                   required />
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Return Date
+
+                            </label>
+
+                            <input type="date"
+                                   id="EndDate"
+                                   name="EndDate"
+                                   class="form-control"
+                                   required />
+
+                        </div>
+                        <div class="mb-3">
+
+                            <label class="form-label">
+
+                                Return Vehicle To
+
+                            </label>
+
+                            <input type="text"
+                                   class="form-control"
+                                   value="@Model.PickupLocation"
+                                   readonly />
+
+                            <small class="text-muted">
+
+                                Vehicle must be returned to the same pickup location.
+
+                            </small>
+
+                        </div>
+                        <hr />
+
+                        <div class="summary-row">
+
+                            <span>
+
+                                Total Days
+
+                            </span>
+
+                            <strong id="days">
+
+                                0
+
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-row">
+
+                            <span>
+
+                                Estimated Cost
+
+                            </span>
+
+                            <strong id="amount"
+                                    class="text-success">
+
+                                ₹ 0
+
+                            </strong>
+
+                        </div>
+
+                        <div class="secure-payment-box">
+
+                            <i class="fa fa-shield-alt"></i>
+
+                            Secure Checkout Powered by Stripe
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-success w-100">
+
+                            Proceed To Payment
+
+                        </button>
+
+                        <a href="/User/Index"
+                           class="btn btn-secondary w-100 mt-2">
+
+                            Cancel
+
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const pricePerDay =
+        @Model.PricePerDay
+
+    document
+        .getElementById("StartDate")
+        .addEventListener(
+            "change",
+            calculate);
+
+    document
+        .getElementById("EndDate")
+        .addEventListener(
+            "change",
+            calculate);
+
+    function calculate()
+    {
+        let start =
+            new Date(
+                document.getElementById(
+                    "StartDate").value);
+
+        let end =
+            new Date(
+                document.getElementById(
+                    "EndDate").value);
+
+        let diff =
+            (end - start) /
+            (1000 * 60 * 60 * 24);
+
+        if (diff > 0)
+        {
+            document
+                .getElementById("days")
+                .innerText =
+                diff;
+
+            document
+                .getElementById("amount")
+                .innerText =
+                "₹ " +
+                (diff * pricePerDay);
+        }
+    }
+
+</script>

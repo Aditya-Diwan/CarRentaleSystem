@@ -1,0 +1,395 @@
+@model IEnumerable<CarRentalSystem.Models.Car>
+
+@{
+    ViewData["Title"] = "Luxury Car Rental";
+}
+
+<!-- ==========================================
+        HERO SECTION
+========================================== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            
+            <div class="col-lg-6">
+                <div class="hero-badge">
+                    <i class="fa fa-sparkles"></i> Premium Driving Redefined
+                </div>
+
+                <h1 class="hero-title">
+                    Experience <span>Luxury & Freedom</span> on Every Drive
+                </h1>
+
+                <p class="hero-subtitle">
+                    Rent prestigious sports cars, sedans, and executive SUVs with zero paperwork delays, instant identity approval, and contactless pickup stations.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="/User/Index" class="btn-hero-primary">
+                        <i class="fa fa-car"></i> Browse Rental Cars
+                    </a>
+                    <a href="/Account/Register" class="btn-hero-secondary">
+                        <i class="fa fa-shield-halved text-primary"></i> Get Verified
+                    </a>
+                </div>
+
+                <div class="hero-trust-list">
+                    <div class="trust-item">
+                        <i class="fa fa-circle-check"></i>
+                        <span>Zero Hidden Charges</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fa fa-circle-check"></i>
+                        <span>Instant Approval</span>
+                    </div>
+                    <div class="trust-item">
+                        <i class="fa fa-circle-check"></i>
+                        <span>Fully Insured Cars</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-image-wrapper text-center">
+                    @{
+                        var heroCar = Model?.FirstOrDefault(c => c.CarImage != null && c.CarImage.Length > 0);
+                    }
+                    @if (heroCar?.CarImage != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(heroCar.CarImage)"
+                             alt="EliteCar Showcase"
+                             class="hero-img" />
+                    }
+                    else
+                    {
+                        <img src="https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=1000&q=80"
+                             alt="Luxury Car"
+                             class="hero-img" />
+                    }
+
+                    <div class="floating-hero-card">
+                        <div class="floating-icon">
+                            <i class="fa fa-shield-check"></i>
+                        </div>
+                        <div class="floating-text">
+                            <h6>EliteCar Certified</h6>
+                            <span>100+ Point Safety Inspected</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+        QUICK SEARCH & AVAILABILITY WIDGET
+========================================== -->
+<div class="container search-widget-container">
+    <div class="search-widget-card">
+        <form method="get" action="/User/Index">
+            <div class="row g-3 align-items-end">
+
+                <div class="col-lg-4 col-md-6 search-field-box">
+                    <label><i class="fa fa-calendar-day text-primary me-1"></i> Pickup Date</label>
+                    <input type="date"
+                           name="startDate"
+                           class="form-control"
+                           value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                           min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                           required />
+                </div>
+
+                <div class="col-lg-4 col-md-6 search-field-box">
+                    <label><i class="fa fa-calendar-check text-primary me-1"></i> Return Date</label>
+                    <input type="date"
+                           name="endDate"
+                           class="form-control"
+                           value="@DateTime.Now.AddDays(2).ToString("yyyy-MM-dd")"
+                           min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                           required />
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+                    <button type="submit" class="btn-search-cars">
+                        <i class="fa fa-magnifying-glass"></i> Find Available Cars
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ==========================================
+        STATS STRIP
+========================================== -->
+<section class="stats-strip">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-6">
+                <div class="stat-counter-card">
+                    <h3>50+</h3>
+                    <p>Luxury Vehicles</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="stat-counter-card">
+                    <h3>12,500+</h3>
+                    <p>Journeys Completed</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="stat-counter-card">
+                    <h3>99.8%</h3>
+                    <p>Satisfied Clients</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="stat-counter-card">
+                    <h3>24/7</h3>
+                    <p>Roadside Assistance</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+        WHY CHOOSE ELITECAR
+========================================== -->
+<section class="section-padding" id="features">
+    <div class="container">
+        
+        <div class="text-center mb-5">
+            <span class="section-tag">Elite Advantages</span>
+            <h2 class="section-title">Why Drive With EliteCar</h2>
+            <p class="section-desc">
+                Experience hassle-free premium car rentals tailored for business travelers, weekend getaways, and special occasions.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">
+                        <i class="fa fa-award"></i>
+                    </div>
+                    <h4>Pristine Rental Cars</h4>
+                    <p>
+                        Every car is thoroughly detailed, sanitized, and undergoes a comprehensive 100-point mechanical inspection before every handover.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">
+                        <i class="fa fa-id-card-clip"></i>
+                    </div>
+                    <h4>Fast Digital Verification</h4>
+                    <p>
+                        Upload your driving license and government ID online for swift verification, avoiding long counter queues and tedious paper forms.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">
+                        <i class="fa fa-location-dot"></i>
+                    </div>
+                    <h4>Contactless Hub Pickups</h4>
+                    <p>
+                        Pickup stations situated in prime city locations. Exact GPS navigation and direct station coordinates are unlocked upon booking.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">
+                        <i class="fa fa-credit-card"></i>
+                    </div>
+                    <h4>Transparent Stripe Payments</h4>
+                    <p>
+                        Transparent daily pricing with zero hidden fees, comprehensive invoice generation, and secure card payments via Stripe.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">
+                        <i class="fa fa-shield-heart"></i>
+                    </div>
+                    <h4>Comprehensive Insurance</h4>
+                    <p>
+                        Every trip includes comprehensive accidental and damage coverage, giving you complete peace of mind wherever the road leads.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">
+                        <i class="fa fa-headset"></i>
+                    </div>
+                    <h4>24/7 Dedicated Support</h4>
+                    <p>
+                        Our support team and rapid roadside assistance network are on standby 24 hours a day, 7 days a week for any assistance.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- ==========================================
+        FEATURED CAR RENTAL SHOWCASE
+========================================== -->
+<section class="section-padding car-rental-section">
+    <div class="container">
+        
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-5">
+            <div>
+                <span class="section-tag">Car Rental Collection</span>
+                <h2 class="section-title mb-0">Featured Vehicles</h2>
+            </div>
+            <a href="/User/Index" class="btn-hero-secondary">
+                View All Cars <i class="fa fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var car in Model)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        <div class="rental-car-card">
+                            <div class="rental-car-img-box">
+                                @if (car.CarImage != null && car.CarImage.Length > 0)
+                                {
+                                    <img src="data:image/png;base64,@Convert.ToBase64String(car.CarImage)" alt="@car.CarName" />
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/600x400?text=Vehicle+Image" alt="@car.CarName" />
+                                }
+
+                                <span class="car-status-badge">
+                                    <i class="fa fa-circle-check"></i> @(car.VehicleStatus ?? "Available")
+                                </span>
+                            </div>
+
+                            <div class="rental-car-content">
+                                <div>
+                                    <h4 class="rental-car-title">@car.CarName</h4>
+                                    <div class="rental-car-model">@car.CarModel</div>
+
+                                    <div class="rental-car-specs-row">
+                                        <span><i class="fa fa-gas-pump text-primary"></i> @car.FuelType</span>
+                                        <span><i class="fa fa-gear text-primary"></i> @car.Transmission</span>
+                                        @if (car.SeatingCapacity != null)
+                                        {
+                                            <span><i class="fa fa-users text-primary"></i> @car.SeatingCapacity Seats</span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="rental-car-footer-row">
+                                    <div class="rental-car-price">
+                                        ₹@car.PricePerDay <small>/ day</small>
+                                    </div>
+                                    <a href="/User/CarDetails?carId=@car.Id" class="btn-rental-car-book">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Explore our full car collection in the user portal.</p>
+                    <a href="/User/Index" class="btn-hero-primary">Browse Vehicles</a>
+                </div>
+            }
+        </div>
+
+    </div>
+</section>
+
+<!-- ==========================================
+        HOW IT WORKS
+========================================== -->
+<section class="section-padding" id="howitworks">
+    <div class="container">
+        
+        <div class="text-center mb-5">
+            <span class="section-tag">Simple Process</span>
+            <h2 class="section-title">How To Rent In 3 Easy Steps</h2>
+            <p class="section-desc">
+                Rent your dream car within minutes with our streamlined digital reservation flow.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="step-card">
+                    <div class="step-number-circle">1</div>
+                    <h4>Select Your Vehicle</h4>
+                    <p>
+                        Choose from our luxury collection of sedans, SUVs, and sports cars. Filter by dates to check instant availability.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="step-card">
+                    <div class="step-number-circle">2</div>
+                    <h4>Fast Verification</h4>
+                    <p>
+                        Upload your driving license and identity documents once. Our automated verification checks ensure safety for all drivers.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="step-card">
+                    <div class="step-number-circle">3</div>
+                    <h4>Drive Away</h4>
+                    <p>
+                        Receive exact pickup hub coordinates, complete secure Stripe checkout, and enjoy contactless vehicle collection.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Call to Action Banner -->
+        <div class="cta-banner">
+            <h2>Ready to Hit The Open Road?</h2>
+            <p>
+                Join over 12,500 happy drivers who choose EliteCar for luxury, reliability, and unparalleled convenience.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="/User/Index" class="btn-hero-primary">
+                    <i class="fa fa-car"></i> Reserve Your Car Now
+                </a>
+                <a href="/Account/Register" class="btn-hero-secondary" style="background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.25);">
+                    Create Free Account
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>

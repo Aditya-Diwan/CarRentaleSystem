@@ -1,0 +1,258 @@
+@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EliteCar • Executive Car Rental Admin</title>
+
+    <link href="~/css/adminlayout.css" rel="stylesheet" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+
+    @{
+        var currentPath = Context.Request.Path.Value?.ToLower() ?? "";
+        string adminName = Context.Session.GetString("Name") ?? "Administrator";
+    }
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar()"></div>
+
+    <div class="main-container">
+
+        <!-- ==========================================
+                SIDEBAR NAVIGATION
+        ========================================== -->
+        <aside class="sidebar" id="adminSidebar">
+            <div class="sidebar-top">
+
+                <!-- Brand Section -->
+                <div class="brand-section">
+                    <a href="/Admin/Dashboard" class="brand-link">
+                        <div class="brand-icon-box">
+                            <i class="fa fa-car"></i>
+                        </div>
+                        <div class="brand-text-group">
+                            <h2 class="logo-text">Elite<span>Car</span></h2>
+                            <span class="brand-subtitle">Car Rental Management</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="nav-section-label">Main Navigation</div>
+
+                <!-- Navigation Menu Links -->
+                <nav class="sidebar-nav">
+                    <a href="/Admin/Dashboard"
+                       class="menu-link @(currentPath.EndsWith("/admin/dashboard") || currentPath == "/admin" || currentPath == "/admin/" ? "active" : "")">
+                        <span class="menu-icon-wrapper"><i class="fa fa-gauge"></i></span>
+                        <span class="menu-label">Dashboard</span>
+                    </a>
+
+                    <a href="/Admin/ManageCar"
+                       class="menu-link @(currentPath.Contains("/admin/managecar") ? "active" : "")">
+                        <span class="menu-icon-wrapper"><i class="fa fa-car"></i></span>
+                        <span class="menu-label">Manage Cars</span>
+                    </a>
+
+                    <a href="/Admin/AddCar"
+                       class="menu-link @(currentPath.Contains("/admin/addcar") ? "active" : "")">
+                        <span class="menu-icon-wrapper"><i class="fa fa-plus-circle"></i></span>
+                        <span class="menu-label">Add Rental Car</span>
+                    </a>
+
+                    <a href="/Admin/Bookings"
+                       class="menu-link @(currentPath.Contains("/admin/bookings") ? "active" : "")">
+                        <span class="menu-icon-wrapper"><i class="fa fa-calendar-check"></i></span>
+                        <span class="menu-label">Bookings & Revenue</span>
+                    </a>
+
+                    <a href="/Admin/Users"
+                       class="menu-link @(currentPath.Contains("/admin/users") ? "active" : "")">
+                        <span class="menu-icon-wrapper"><i class="fa fa-users"></i></span>
+                        <span class="menu-label">Users & Clients</span>
+                    </a>
+
+                    <a href="/Admin/Verification"
+                       class="menu-link @(currentPath.Contains("/admin/verification") ? "active" : "")">
+                        <span class="menu-icon-wrapper"><i class="fa fa-id-card"></i></span>
+                        <span class="menu-label">ID Verification</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-divider"></div>
+
+                <!-- Gateway Status Tile -->
+                <div class="gateway-card">
+                    <div class="gateway-header">
+                        <i class="fa-brands fa-stripe text-primary fs-5"></i>
+                        <span class="gateway-status-pill">
+                            <span class="pulse-indicator"></span> Online
+                        </span>
+                    </div>
+                    <div class="gateway-body">
+                        <strong>Stripe Payments</strong>
+                        <small>256-bit SSL Secure Checkout</small>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar Bottom: Admin Profile Card & Logout -->
+            <div class="sidebar-bottom">
+                <a href="/Admin/Profile" class="user-card" title="Edit Profile & Security">
+                    @if (ViewBag.ProfileImage != null)
+                    {
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String((byte[])ViewBag.ProfileImage)"
+                             class="sidebar-profile-img" alt="Admin Avatar" />
+                    }
+                    else
+                    {
+                        <img src="~/images/default-user.png"
+                             class="sidebar-profile-img" alt="Default Avatar" />
+                    }
+
+                    <div class="user-details">
+                        <strong>@adminName</strong>
+                        <small><i class="fa fa-shield-halved text-primary"></i> Master Admin</small>
+                    </div>
+
+                    <i class="fa fa-chevron-right profile-arrow"></i>
+                </a>
+
+                <a href="/Account/Logout" class="sidebar-logout-btn">
+                    <i class="fa fa-arrow-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ==========================================
+                MAIN CONTENT AREA
+        ========================================== -->
+        <div class="content-wrapper">
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="d-flex align-items-center gap-3">
+                    <button type="button" class="sidebar-toggle-btn d-lg-none" onclick="toggleMobileSidebar()" aria-label="Toggle Sidebar">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <div class="topbar-context">
+                        <span class="portal-badge">
+                            <i class="fa fa-circle-dot text-success me-1"></i> Live Console
+                        </span>
+                        <h4 class="topbar-title mb-0">EliteCar Rental Management</h4>
+                    </div>
+                </div>
+
+                <!-- Right Topbar Controls -->
+                <div class="d-flex align-items-center gap-3">
+
+                    <a href="/Home/Index" target="_blank" class="btn-topbar-secondary" title="Preview Public Car Rental Website">
+                        <i class="fa fa-globe"></i>
+                        <span class="d-none d-sm-inline">Public Website</span>
+                    </a>
+
+                    <a href="/Admin/AddCar" class="btn-topbar-primary d-none d-md-inline-flex">
+                        <i class="fa fa-plus"></i>
+                        <span>Add Car</span>
+                    </a>
+
+                    <!-- Profile Dropdown -->
+                    <div class="profile-dropdown">
+                        <button type="button" class="profile-btn" onclick="toggleProfileMenu()">
+                            @if (ViewBag.ProfileImage != null)
+                            {
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String((byte[])ViewBag.ProfileImage)"
+                                     class="top-profile-img" alt="Profile" />
+                            }
+                            else
+                            {
+                                <img src="~/images/default-user.png"
+                                     class="top-profile-img" alt="Profile" />
+                            }
+
+                            <span class="d-none d-sm-inline font-weight-bold">@adminName</span>
+                            <i class="fa fa-chevron-down ms-1 fs-xs"></i>
+                        </button>
+
+                        <div id="profileMenu" class="profile-menu">
+                            <div class="profile-header">
+                                @if (ViewBag.ProfileImage != null)
+                                {
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String((byte[])ViewBag.ProfileImage)"
+                                         class="profile-avatar-img" alt="Profile" />
+                                }
+                                else
+                                {
+                                    <img src="~/images/default-user.png"
+                                         class="profile-avatar-img" alt="Profile" />
+                                }
+
+                                <div>
+                                    <strong>@adminName</strong>
+                                    <small class="text-muted d-block">Admin Operations</small>
+                                </div>
+                            </div>
+
+                            <div class="profile-menu-links">
+                                <a href="/Admin/Profile">
+                                    <i class="fa fa-user-shield text-primary"></i>
+                                    <span>Admin Profile & Security</span>
+                                </a>
+                                <a href="/Admin/ManageCar">
+                                    <i class="fa fa-car-side text-primary"></i>
+                                    <span>Car Rental Inventory</span>
+                                </a>
+                                <a href="/Admin/Bookings">
+                                    <i class="fa fa-file-invoice-dollar text-primary"></i>
+                                    <span>Revenue Reports</span>
+                                </a>
+                                <div class="dropdown-divider my-1"></div>
+                                <a href="/Account/Logout" class="text-danger">
+                                    <i class="fa fa-sign-out-alt"></i>
+                                    <span>Sign Out</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- Page Body Render -->
+            <main class="page-content">
+                @RenderBody()
+            </main>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleProfileMenu() {
+            document.getElementById("profileMenu").classList.toggle("show");
+        }
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById("adminSidebar");
+            const backdrop = document.getElementById("sidebarBackdrop");
+            sidebar.classList.toggle("mobile-open");
+            backdrop.classList.toggle("show");
+        }
+
+        document.addEventListener("click", function(event) {
+            const dropdown = document.querySelector(".profile-dropdown");
+            const menu = document.getElementById("profileMenu");
+            if (dropdown && menu && !dropdown.contains(event.target)) {
+                menu.classList.remove("show");
+            }
+        });
+    </script>
+</body>
+</html>

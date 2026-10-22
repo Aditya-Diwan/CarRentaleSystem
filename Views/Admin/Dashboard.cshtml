@@ -1,0 +1,390 @@
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var recentBookings = ViewBag.RecentBookings as List<CarRentalSystem.Models.Booking>;
+    var pendingList = ViewBag.PendingVerificationsList as List<CarRentalSystem.Models.UserVerification>;
+    int totalCars = ViewBag.TotalCars ?? 0;
+    int availableCars = ViewBag.AvailableCars ?? 0;
+    int bookedCars = ViewBag.BookedCars ?? 0;
+    int maintenanceCars = ViewBag.MaintenanceCars ?? 0;
+
+    int availPercent = totalCars > 0 ? (availableCars * 100 / totalCars) : 0;
+    int bookedPercent = totalCars > 0 ? (bookedCars * 100 / totalCars) : 0;
+    int maintPercent = totalCars > 0 ? (maintenanceCars * 100 / totalCars) : 0;
+}
+
+<link href="~/css/dashboard.css"
+      rel="stylesheet"
+      asp-append-version="true" />
+
+<div class="dashboard-page">
+
+    <!-- ==========================================
+            EXECUTIVE OPERATIONS HEADER
+    ========================================== -->
+    <div class="admin-header-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <div class="admin-page-tag">
+                    <span class="pulse-dot"></span>
+                    <span>Operations Command Center</span>
+                </div>
+                <h1 class="admin-header-title">
+                    Operations & Car Rental Overview
+                </h1>
+                <p class="admin-header-subtitle">
+                    Real-time performance analytics, live rental bookings, and vehicle readiness.
+                </p>
+            </div>
+
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <a href="/Admin/AddCar" class="btn-admin-action">
+                    <i class="fa fa-plus-circle"></i> Add New Car
+                </a>
+                <a href="/Admin/Verification" class="btn-admin-secondary">
+                    <i class="fa fa-id-card"></i> Verify Documents
+                    @if (ViewBag.PendingVerifications > 0)
+                    {
+                        <span class="badge bg-warning text-dark ms-1">@ViewBag.PendingVerifications</span>
+                    }
+                </a>
+                <a href="/Admin/ManageCar" class="btn-admin-secondary">
+                    <i class="fa fa-car"></i> Manage Cars
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+            ATTENTION BANNER (IF PENDING TASKS)
+    ========================================== -->
+    @if (ViewBag.PendingVerifications > 0)
+    {
+        <div class="admin-alert-banner">
+            <div class="alert-banner-left">
+                <div class="alert-banner-icon">
+                    <i class="fa fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h5 class="alert-banner-title">
+                        @ViewBag.PendingVerifications Customer Identity Documents Awaiting Review
+                    </h5>
+                    <p class="alert-banner-subtitle">
+                        Renting requires customer license approval. Please review submissions to unblock pending reservations.
+                    </p>
+                </div>
+            </div>
+            <a href="/Admin/Verification" class="btn-alert-review">
+                Review Documents <i class="fa fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    }
+
+    <!-- ==========================================
+            TOP KPI METRIC CARDS
+    ========================================== -->
+    <div class="row g-4 mb-4">
+
+        <!-- Revenue -->
+        <div class="col-xl-3 col-md-6">
+            <div class="kpi-stat-card">
+                <div>
+                    <div class="kpi-card-header">
+                        <div class="kpi-icon-box revenue">
+                            <i class="fa fa-wallet"></i>
+                        </div>
+                        <span class="kpi-stat-pill primary">
+                            <i class="fa fa-credit-card me-1"></i> Stripe Live
+                        </span>
+                    </div>
+                    <div class="kpi-card-label">Total Gross Revenue</div>
+                    <div class="kpi-card-number">
+                        ₹ @(((decimal)ViewBag.TotalRevenue).ToString("N0"))
+                    </div>
+                </div>
+                <p class="kpi-card-meta">
+                    <i class="fa fa-arrow-trend-up text-success"></i> All confirmed & paid bookings
+                </p>
+            </div>
+        </div>
+
+        <!-- Bookings -->
+        <div class="col-xl-3 col-md-6">
+            <div class="kpi-stat-card">
+                <div>
+                    <div class="kpi-card-header">
+                        <div class="kpi-icon-box bookings">
+                            <i class="fa fa-calendar-check"></i>
+                        </div>
+                        <span class="kpi-stat-pill success">
+                            <i class="fa fa-bolt me-1"></i> Active Platform
+                        </span>
+                    </div>
+                    <div class="kpi-card-label">Total Reservations</div>
+                    <div class="kpi-card-number">
+                        @ViewBag.TotalBookings
+                    </div>
+                </div>
+                <p class="kpi-card-meta">
+                    <i class="fa fa-circle-check text-success"></i> Customer journeys booked
+                </p>
+            </div>
+        </div>
+
+        <!-- Car Rental Inventory -->
+        <div class="col-xl-3 col-md-6">
+            <div class="kpi-stat-card">
+                <div>
+                    <div class="kpi-card-header">
+                        <div class="kpi-icon-box cars">
+                            <i class="fa fa-car"></i>
+                        </div>
+                        <span class="kpi-stat-pill success">
+                            @ViewBag.AvailableCars Available
+                        </span>
+                    </div>
+                    <div class="kpi-card-label">Total Rental Cars</div>
+                    <div class="kpi-card-number">
+                        @ViewBag.TotalCars <span style="font-size: 16px; font-weight: 600; color: #64748b;">Vehicles</span>
+                    </div>
+                </div>
+                <p class="kpi-card-meta">
+                    <i class="fa fa-road text-primary"></i> @ViewBag.BookedCars on road • @ViewBag.MaintenanceCars in service
+                </p>
+            </div>
+        </div>
+
+        <!-- Registered Customers -->
+        <div class="col-xl-3 col-md-6">
+            <div class="kpi-stat-card">
+                <div>
+                    <div class="kpi-card-header">
+                        <div class="kpi-icon-box users">
+                            <i class="fa fa-users"></i>
+                        </div>
+                        <span class="kpi-stat-pill warning">
+                            @ViewBag.ApprovedVerifications Verified
+                        </span>
+                    </div>
+                    <div class="kpi-card-label">Registered Customers</div>
+                    <div class="kpi-card-number">
+                        @ViewBag.TotalUsers <span style="font-size: 16px; font-weight: 600; color: #64748b;">Users</span>
+                    </div>
+                </div>
+                <p class="kpi-card-meta">
+                    <i class="fa fa-user-lock text-muted"></i> @ViewBag.BlockedUsers blocked accounts
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+            TWO-COLUMN SPLIT OPERATIONS GRID
+    ========================================== -->
+    <div class="row g-4">
+
+        <!-- LEFT COLUMN: Live Bookings & Vehicle Distribution -->
+        <div class="col-lg-8">
+
+            <!-- Recent Bookings Stream -->
+            <div class="dash-panel-card">
+                <div class="dash-panel-header">
+                    <h3>
+                        <i class="fa fa-clock-rotate-left text-primary"></i> Recent Booking Activity
+                    </h3>
+                    <a href="/Admin/Bookings" class="dash-panel-link">
+                        View All Bookings <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                @if (recentBookings != null && recentBookings.Any())
+                {
+                    foreach (var b in recentBookings)
+                    {
+                        var statusCls = (b.Status ?? "Confirmed").ToLower().Replace(" ", "");
+                        <div class="dash-booking-item">
+                            <div class="booking-item-left">
+                                @if (b.Car?.CarImage != null && b.Car.CarImage.Length > 0)
+                                {
+                                    <img src="data:image/png;base64,@Convert.ToBase64String(b.Car.CarImage)" class="booking-car-thumb" alt="@b.Car?.CarName" />
+                                }
+                                else
+                                {
+                                    <div class="booking-car-thumb d-flex align-items-center justify-content-center text-primary bg-light">
+                                        <i class="fa fa-car"></i>
+                                    </div>
+                                }
+                                <div class="booking-info-block">
+                                    <h5>@(b.Car?.CarName ?? "Vehicle") • @(b.Car?.CarModel ?? "")</h5>
+                                    <p>
+                                        <i class="fa fa-user me-1 text-muted"></i> @(b.User?.FullName ?? "Customer") 
+                                        <span class="mx-1">•</span> 
+                                        <i class="fa fa-calendar me-1 text-muted"></i> @b.StartDate.ToString("dd MMM") - @b.EndDate.ToString("dd MMM yyyy")
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="booking-item-right">
+                                <div class="booking-price-tag">₹ @b.TotalAmount.ToString("N0")</div>
+                                <span class="status-badge-custom @statusCls">
+                                    @(b.Status ?? "Confirmed")
+                                </span>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fa fa-calendar-xmark fs-2 mb-2"></i>
+                        <p>No customer reservations recorded yet.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Car Rental Operational Status Distribution -->
+            <div class="dash-panel-card">
+                <div class="dash-panel-header">
+                    <h3>
+                        <i class="fa fa-chart-pie text-primary"></i> Car Rental Inventory Readiness
+                    </h3>
+                    <span class="badge bg-light text-primary border px-3 py-1 rounded-pill">
+                        @totalCars Total Rental Cars
+                    </span>
+                </div>
+
+                <!-- Available Progress -->
+                <div class="status-stat-row">
+                    <div class="status-stat-meta">
+                        <span><i class="fa fa-circle-check text-success me-1"></i> Available For Immediate Rent</span>
+                        <strong>@availableCars Vehicles (@availPercent%)</strong>
+                    </div>
+                    <div class="status-progress-bar">
+                        <div class="status-progress-fill available" style="width: @availPercent%;"></div>
+                    </div>
+                </div>
+
+                <!-- Booked Progress -->
+                <div class="status-stat-row">
+                    <div class="status-stat-meta">
+                        <span><i class="fa fa-road text-primary me-1"></i> Currently On Trip / Booked</span>
+                        <strong>@bookedCars Vehicles (@bookedPercent%)</strong>
+                    </div>
+                    <div class="status-progress-bar">
+                        <div class="status-progress-fill booked" style="width: @bookedPercent%;"></div>
+                    </div>
+                </div>
+
+                <!-- Maintenance Progress -->
+                <div class="status-stat-row mb-0">
+                    <div class="status-stat-meta">
+                        <span><i class="fa fa-wrench text-warning me-1"></i> Under Inspection & Maintenance</span>
+                        <strong>@maintenanceCars Vehicles (@maintPercent%)</strong>
+                    </div>
+                    <div class="status-progress-bar">
+                        <div class="status-progress-fill maintenance" style="width: @maintPercent%;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Verification Queue & Quick Hubs -->
+        <div class="col-lg-4">
+
+            <!-- Verification Action Queue -->
+            <div class="dash-panel-card">
+                <div class="dash-panel-header">
+                    <h3>
+                        <i class="fa fa-id-card-clip text-primary"></i> Verification Queue
+                    </h3>
+                    <a href="/Admin/Verification" class="dash-panel-link">
+                        Center <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                @if (pendingList != null && pendingList.Any())
+                {
+                    foreach (var v in pendingList)
+                    {
+                        <div class="ver-mini-item">
+                            <div class="ver-mini-user">
+                                <div class="ver-mini-avatar">
+                                    @(string.IsNullOrEmpty(v.User?.FullName) ? "U" : v.User.FullName.Substring(0, 1).ToUpper())
+                                </div>
+                                <div>
+                                    <h6>@(v.User?.FullName ?? "Customer")</h6>
+                                    <span>Submitted @v.UploadDate.ToString("dd MMM, hh:mm tt")</span>
+                                </div>
+                            </div>
+                            <a href="/Admin/Verification" class="btn-mini-review">
+                                Review
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; background: #dcfce7; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 12px;">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <h6 style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Queue Clear</h6>
+                        <p style="font-size: 13px; color: #64748b; margin: 0;">All customer verification requests are up to date.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- Stripe Payment Gateway Card -->
+            <div class="stripe-gateway-card">
+                <div class="stripe-card-top">
+                    <div class="stripe-brand-logo">
+                        <i class="fa-brands fa-stripe"></i>
+                    </div>
+                    <span class="stripe-status-pill">
+                        <span class="pulse-dot" style="background:#4ade80;"></span> Live & Secure
+                    </span>
+                </div>
+                <div class="stripe-card-body">
+                    <h4>Stripe Gateway Active</h4>
+                    <p>
+                        Encrypted tokenization and automated instant payment webhooks are fully functioning.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quick Management Shortcuts -->
+            <div class="dash-panel-card">
+                <div class="dash-panel-header">
+                    <h3>
+                        <i class="fa fa-bolt text-primary"></i> Operations Shortcuts
+                    </h3>
+                </div>
+
+                <div class="quick-shortcuts-grid">
+                    <a href="/Admin/ManageCar" class="shortcut-tile">
+                        <i class="fa fa-car-side"></i>
+                        <span>Manage Cars</span>
+                    </a>
+
+                    <a href="/Admin/Users" class="shortcut-tile">
+                        <i class="fa fa-users-gear"></i>
+                        <span>User Access</span>
+                    </a>
+
+                    <a href="/Admin/Bookings" class="shortcut-tile">
+                        <i class="fa fa-file-invoice-dollar"></i>
+                        <span>All Bookings</span>
+                    </a>
+
+                    <a href="/Admin/Profile" class="shortcut-tile">
+                        <i class="fa fa-shield-halved"></i>
+                        <span>Admin Security</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

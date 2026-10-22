@@ -1,0 +1,284 @@
+@model IEnumerable<CarRentalSystem.Models.User>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/css/manageusers.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="manage-users-page">
+
+    <!-- PAGE HEADER -->
+    <div class="manage-users-header">
+        <div class="users-title-box">
+            <h1>Customer & User Accounts</h1>
+            <p>Monitor registered users, manage account verifications, and regulate access.</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-circle-check me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-triangle-exclamation me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- STATS COUNTER ROW -->
+    <div class="users-stats-row">
+        <div class="user-stat-card">
+            <div class="stat-icon total">
+                <i class="fa fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-num">@Model.Count()</div>
+                <div class="stat-text">Total Accounts</div>
+            </div>
+        </div>
+
+        <div class="user-stat-card">
+            <div class="stat-icon verified">
+                <i class="fa fa-circle-check"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-num">@Model.Count(x => x.IsVerified)</div>
+                <div class="stat-text">Verified Users</div>
+            </div>
+        </div>
+
+        <div class="user-stat-card">
+            <div class="stat-icon unverified">
+                <i class="fa fa-clock"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-num">@Model.Count(x => !x.IsVerified)</div>
+                <div class="stat-text">Unverified</div>
+            </div>
+        </div>
+
+        <div class="user-stat-card">
+            <div class="stat-icon blocked">
+                <i class="fa fa-ban"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-num">@Model.Count(x => x.IsBlocked)</div>
+                <div class="stat-text">Blocked Accounts</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOOLBAR & FILTERS -->
+    <div class="users-toolbar-card">
+        <div class="users-filter-group">
+            <button type="button" class="user-filter-pill active" onclick="filterUserCards('all', this)">All Users</button>
+            <button type="button" class="user-filter-pill" onclick="filterUserCards('verified', this)">Verified</button>
+            <button type="button" class="user-filter-pill" onclick="filterUserCards('unverified', this)">Unverified</button>
+            <button type="button" class="user-filter-pill" onclick="filterUserCards('active', this)">Active</button>
+            <button type="button" class="user-filter-pill" onclick="filterUserCards('blocked', this)">Blocked</button>
+            <button type="button" class="user-filter-pill" onclick="filterUserCards('admin', this)">Admins</button>
+        </div>
+
+        <div class="users-search-box">
+            <i class="fa fa-search"></i>
+            <input type="text" id="userSearchInput" placeholder="Search by name, email, phone, city..." onkeyup="searchUserCards()" />
+        </div>
+    </div>
+
+    <!-- USER CARDS GRID -->
+    <div class="users-cards-grid" id="usersContainer">
+        @foreach (var item in Model)
+        {
+            var isVerified = item.IsVerified;
+            var isBlocked = item.IsBlocked;
+            var role = item.Role ?? "User";
+            var initials = !string.IsNullOrEmpty(item.FullName) ? item.FullName.Substring(0, Math.Min(2, item.FullName.Length)).ToUpper() : "U";
+
+            <div class="user-item-card user-card-item"
+                 data-verified="@(isVerified ? "verified" : "unverified")"
+                 data-status="@(isBlocked ? "blocked" : "active")"
+                 data-role="@role.ToLower()"
+                 data-name="@(item.FullName ?? "")"
+                 data-email="@(item.Email ?? "")"
+                 data-phone="@(item.PhoneNumber ?? "")"
+                 data-city="@(item.City ?? "")">
+
+                <!-- Card Header with Photo and Badges -->
+                <div class="user-card-header">
+                    <div class="user-avatar-wrapper">
+                        @if (item.ProfileImage != null && item.ProfileImage.Length > 0)
+                        {
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.ProfileImage)" alt="@item.FullName" class="user-avatar-img" />
+                        }
+                        else
+                        {
+                            <div class="user-initials-fallback">@initials</div>
+                        }
+                    </div>
+
+                    <div class="user-name-title">
+                        <h3 title="@item.FullName">@item.FullName</h3>
+                        <span class="user-role-badge @(role.ToLower() == "admin" ? "admin" : "user")">
+                            <i class="fa @(role.ToLower() == "admin" ? "fa-shield-halved" : "fa-user") me-1"></i> @role
+                        </span>
+                    </div>
+
+                    <div class="user-status-badges-row">
+                        @if (isVerified)
+                        {
+                            <span class="user-pill verified" title="Verified Customer">
+                                <i class="fa fa-circle-check"></i> Verified
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="user-pill unverified" title="Identity Verification Pending">
+                                <i class="fa fa-clock"></i> Pending
+                            </span>
+                        }
+
+                        @if (isBlocked)
+                        {
+                            <span class="user-pill blocked" title="Account Blocked">
+                                <i class="fa fa-ban"></i> Blocked
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Card Body Information -->
+                <div class="user-card-body">
+                    <div class="user-info-row" title="@item.Email">
+                        <i class="fa fa-envelope"></i>
+                        <span class="info-text">@item.Email</span>
+                    </div>
+
+                    <div class="user-info-row">
+                        <i class="fa fa-phone"></i>
+                        <span class="info-text">@(!string.IsNullOrEmpty(item.PhoneNumber) ? item.PhoneNumber : "Phone not provided")</span>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(item.DrivingLicenseNumber))
+                    {
+                        <div class="user-info-row" title="Driving License">
+                            <i class="fa fa-id-card"></i>
+                            <span class="info-text">DL: <strong>@item.DrivingLicenseNumber</strong></span>
+                        </div>
+                    }
+
+                    <div class="user-info-row">
+                        <i class="fa fa-map-marker-alt"></i>
+                        <span class="info-text">
+                            @if (!string.IsNullOrEmpty(item.City) || !string.IsNullOrEmpty(item.State))
+                            {
+                                @($"{item.City}{(string.IsNullOrEmpty(item.State) ? "" : $", {item.State}")}{(string.IsNullOrEmpty(item.Pincode) ? "" : $" - {item.Pincode}")}")
+                            }
+                            else
+                            {
+                                <span>Location not updated</span>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="user-info-row">
+                        <i class="fa fa-calendar-day"></i>
+                        <span class="info-text text-muted" style="font-size: 12px;">
+                            Member since @(item.CreatedAt.HasValue ? item.CreatedAt.Value.ToString("dd MMM yyyy") : "N/A")
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card Actions Footer -->
+                <div class="user-card-footer">
+                    @if (item.IsBlocked)
+                    {
+                        <a href="/Admin/UnblockUser?userId=@item.Id" class="btn-block-toggle unblock" title="Unblock user access">
+                            <i class="fa fa-lock-open"></i> Unblock Account
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/Admin/BlockUser?userId=@item.Id" class="btn-block-toggle block" title="Block user access">
+                            <i class="fa fa-ban"></i> Block Account
+                        </a>
+                    }
+
+                    <a href="/Admin/DeleteUser?userId=@item.Id"
+                       class="btn-delete-user"
+                       title="Delete User"
+                       onclick="return confirm('Are you sure you want to permanently delete user @item.FullName?');">
+                        <i class="fa fa-trash-can"></i>
+                    </a>
+                </div>
+
+            </div>
+        }
+    </div>
+
+</div>
+
+<script>
+    let activeUserFilter = "all";
+
+    function filterUserCards(filterType, btnElement) {
+        activeUserFilter = filterType;
+
+        document.querySelectorAll('.user-filter-pill').forEach(btn => btn.classList.remove('active'));
+        if (btnElement) {
+            btnElement.classList.add('active');
+        }
+
+        applyUserFilters();
+    }
+
+    function searchUserCards() {
+        applyUserFilters();
+    }
+
+    function applyUserFilters() {
+        const query = (document.getElementById('userSearchInput')?.value || '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.user-card-item');
+
+        cards.forEach(card => {
+            const verified = card.getAttribute('data-verified') || '';
+            const status = card.getAttribute('data-status') || '';
+            const role = card.getAttribute('data-role') || '';
+            const name = (card.getAttribute('data-name') || '').toLowerCase();
+            const email = (card.getAttribute('data-email') || '').toLowerCase();
+            const phone = (card.getAttribute('data-phone') || '').toLowerCase();
+            const city = (card.getAttribute('data-city') || '').toLowerCase();
+
+            let matchesFilter = false;
+
+            if (activeUserFilter === "all") {
+                matchesFilter = true;
+            } else if (activeUserFilter === "verified") {
+                matchesFilter = verified === "verified";
+            } else if (activeUserFilter === "unverified") {
+                matchesFilter = verified === "unverified";
+            } else if (activeUserFilter === "active") {
+                matchesFilter = status === "active";
+            } else if (activeUserFilter === "blocked") {
+                matchesFilter = status === "blocked";
+            } else if (activeUserFilter === "admin") {
+                matchesFilter = role === "admin";
+            }
+
+            let matchesSearch = true;
+            if (query.length > 0) {
+                matchesSearch = name.includes(query) || email.includes(query) || phone.includes(query) || city.includes(query);
+            }
+
+            card.style.display = (matchesFilter && matchesSearch) ? "flex" : "none";
+        });
+    }
+</script>

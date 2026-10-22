@@ -1,0 +1,251 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+}
+
+.account-page {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* LEFT SIDE */
+
+.account-left {
+    width: 50%;
+    background: linear-gradient( rgba(15,23,42,.75), rgba(15,23,42,.75) ), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1974') no-repeat center center/cover;
+    position: relative;
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.brand-box {
+    text-align: center;
+    color: white;
+}
+
+.brand-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.brand-box h1 {
+    font-size: 70px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.brand-box p {
+    font-size: 20px;
+    opacity: .9;
+}
+
+/* RIGHT SIDE */
+
+.account-right {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.account-card {
+    width: 100%;
+    max-width: 450px;
+    background: white;
+    border-radius: 24px;
+    padding: 45px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.08);
+}
+
+    .account-card h2 {
+        text-align: center;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+/* LOGO */
+
+.login-logo {
+    width: 85px;
+    height: 85px;
+    margin: auto;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    background: linear-gradient( 135deg, #2563eb, #7c3aed );
+}
+
+    .login-logo i {
+        color: white;
+        font-size: 36px;
+    }
+
+/* FORM */
+
+.form-group label,
+label {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+    .input-wrapper i {
+        position: absolute;
+        left: 18px;
+        top: 17px;
+        color: #6b7280;
+    }
+
+    .input-wrapper input {
+        height: 55px;
+        padding-left: 50px;
+        border-radius: 14px;
+        border: 1px solid #d1d5db;
+    }
+
+        .input-wrapper input:focus {
+            box-shadow: none;
+            border-color: #2563eb;
+        }
+
+.eye-icon {
+    position: absolute;
+    right: 18px;
+    top: 17px;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+/* ROLE BUTTONS */
+
+.role-selection {
+    display: flex;
+    gap: 10px;
+}
+
+.role-btn {
+    flex: 1;
+    height: 52px;
+    border: 2px solid #d1d5db;
+    background: white;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+    .role-btn:hover {
+        border-color: #2563eb;
+    }
+
+.active-role {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+/* REMEMBER */
+
+.remember-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+    .remember-row a {
+        text-decoration: none;
+        color: #2563eb;
+        font-weight: 600;
+    }
+
+/* BUTTONS */
+
+.main-btn,
+.login-main-btn,
+.user-login-btn,
+.admin-login-btn {
+    width: 100%;
+    height: 55px;
+    border: none;
+    border-radius: 14px;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    transition: .3s;
+    background: linear-gradient( 135deg, #2563eb, #7c3aed );
+}
+
+    .main-btn:hover,
+    .login-main-btn:hover,
+    .user-login-btn:hover,
+    .admin-login-btn:hover {
+        transform: translateY(-2px);
+    }
+
+/* LINKS */
+
+.account-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+    .register-link,
+    .account-link a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .register-link:hover,
+        .account-link a:hover {
+            color: #1d4ed8;
+        }
+
+/* ALERT */
+
+.alert {
+    border-radius: 12px;
+}
+
+/* MOBILE */
+
+@media(max-width:992px) {
+
+    .account-left {
+        display: none;
+    }
+
+    .account-right {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .account-card {
+        padding: 30px;
+    }
+
+    .brand-box h1 {
+        font-size: 50px;
+    }
+}

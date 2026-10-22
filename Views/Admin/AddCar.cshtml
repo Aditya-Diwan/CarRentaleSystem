@@ -1,0 +1,523 @@
+
+@model CarRentalSystem.Models.Car
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/css/addcar.css"
+      rel="stylesheet" />
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<div class="addcar-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="page-tag">
+                <i class="fa fa-car me-1"></i> Car Rental Management
+            </span>
+
+            <h1 class="page-title">
+                Add Rental Car
+            </h1>
+
+            <p class="page-subtitle">
+                Register a new rental vehicle into the EliteCar catalog with daily pricing, technical specifications, and GPS pickup location.
+            </p>
+
+        </div>
+
+        <div class="header-actions">
+
+            <a asp-controller="Admin"
+               asp-action="ManageCar"
+               class="back-btn">
+
+                <i class="fa fa-arrow-left"></i>
+
+                Back
+
+            </a>
+
+            <button form="carForm"
+                    type="submit"
+                    id="saveVehicleBtn"
+                    class="publish-btn">
+
+                <i class="fa fa-save"></i>
+
+                Save Vehicle
+
+            </button>
+
+        </div>
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="fa fa-exclamation-triangle me-2"></i>
+            @ViewBag.Error
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form id="carForm"
+          asp-action="AddCar"
+          asp-controller="Admin"
+          method="post"
+          enctype="multipart/form-data">
+
+        <div class="row">
+
+            <!-- LEFT SIDE -->
+
+            <div class="col-xl-4 col-lg-5">
+
+                <!-- Vehicle Image -->
+
+                <div class="modern-card">
+
+                    <div class="card-header-custom">
+                        <h3>Vehicle Image</h3>
+                    </div>
+
+                    <label class="upload-box">
+
+                        <input type="file"
+                               name="ImageFile"
+                               accept="image/*"
+                               hidden
+                               onchange="previewImage(event)" />
+
+                        <div id="uploadContent">
+
+                            <i class="fa fa-cloud-upload-alt upload-icon"></i>
+
+                            <h5>Upload Vehicle Image</h5>
+
+                            <p>Drag & Drop or Click Here</p>
+
+                            <small>JPG • PNG • JPEG</small>
+
+                        </div>
+
+                        <img id="previewImg"
+                             class="preview-image" />
+
+                    </label>
+
+                </div>
+
+                <!-- Pricing -->
+
+                <div class="modern-card mt-4">
+
+                    <div class="card-header-custom">
+                        <h3>Pricing Information</h3>
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Rental Price Per Day *</label>
+
+                        <input asp-for="PricePerDay"
+                               type="number"
+                               step="0.01"
+                               min="1"
+                               required
+                               class="form-control modern-input"
+                               placeholder="₹ 5000" />
+
+                    </div>
+
+                    <div class="pricing-note">
+
+                        <strong>Pricing Tip</strong>
+
+                        <p>
+                            Competitive pricing increases bookings and car rental utilization.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+
+            <div class="col-xl-8 col-lg-7">
+
+                <div class="modern-card vehicle-info-card">
+
+                    <div class="card-header-custom">
+
+                        <h3>Vehicle Information</h3>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Vehicle Name *</label>
+
+                        <input asp-for="CarName"
+                               required
+                               class="form-control modern-input"
+                               placeholder="Enter Car Name" />
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Model *</label>
+
+                            <input asp-for="CarModel"
+                                   required
+                                   class="form-control modern-input"
+                                   placeholder="e.g. XUV700" />
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Fuel Type *</label>
+
+                            <select asp-for="FuelType"
+                                    required
+                                    class="form-control modern-input">
+
+                                <option value="">Select Fuel Type</option>
+                                <option>Petrol</option>
+                                <option>Diesel</option>
+                                <option>CNG</option>
+                                <option>Electric</option>
+                                <option>Hybrid</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Car Type</label>
+
+                            <select asp-for="CarType"
+                                    class="form-control modern-input">
+
+                                <option value="">Select Car Type</option>
+                                <option>SUV</option>
+                                <option>Sedan</option>
+                                <option>Hatchback</option>
+                                <option>MUV</option>
+                                <option>Luxury</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Transmission *</label>
+
+                            <select asp-for="Transmission"
+                                    required
+                                    class="form-control modern-input">
+
+                                <option value="">Select Transmission</option>
+                                <option>Automatic</option>
+                                <option>Manual</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Manufacturing Year</label>
+
+                            <input asp-for="ManufacturingYear"
+                                    class="form-control modern-input"
+                                    type="number"
+                                    placeholder="2025" />
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Seating Capacity</label>
+
+                            <select asp-for="SeatingCapacity"
+                                    class="form-control modern-input">
+
+                                <option value="">Select Seats</option>
+                                <option>2</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Registration Number *</label>
+
+                            <input asp-for="RegistrationNumber"
+                                   required
+                                   class="form-control modern-input"
+                                   placeholder="GJ05AB1234" />
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Vehicle Status</label>
+
+                            <select asp-for="VehicleStatus"
+                                    class="form-control modern-input">
+
+                                <option>Available</option>
+                                <option>Booked</option>
+                                <option>Under Maintenance</option>
+                                <option>Inactive</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="row mt-4">
+
+            <!-- LEFT SIDE -->
+
+            <div class="col-xl-4 col-lg-5">
+
+                <div class="modern-card">
+
+                    <div class="card-header-custom">
+
+                        <h3>Pickup Location Map</h3>
+
+                    </div>
+
+                    <p class="text-muted mb-3">
+
+                        Click anywhere on the map to select the vehicle pickup location.
+
+                    </p>
+
+                    <div id="map"
+                         style="height:450px;
+                        width:100%;
+                        border-radius:18px;
+                        overflow:hidden;
+                        border:1px solid #dcdcdc;">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+
+            <div class="col-xl-8 col-lg-7">
+
+                <div class="modern-card pickup-location-card">
+
+                    <div class="card-header-custom">
+
+                        <h3>Pickup Location</h3>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Location Name</label>
+
+                            <input asp-for="PickupLocation"
+                                   class="form-control modern-input"
+                                   placeholder="Surat Railway Station Parking" />
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Landmark</label>
+
+                            <input asp-for="Landmark"
+                                   class="form-control modern-input"
+                                   placeholder="Opposite Main Entrance Gate" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label>Full Address</label>
+
+                        <textarea asp-for="Address"
+                                  class="form-control modern-input"
+                                  rows="5"
+                                  placeholder="Station Road, Near Platform No.1, Surat"></textarea>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Latitude</label>
+
+                            <input asp-for="Latitude"
+                                   class="form-control modern-input"
+                                   readonly
+                                   placeholder="Click on Map" />
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Longitude</label>
+
+                            <input asp-for="Longitude"
+                                   class="form-control modern-input"
+                                   readonly
+                                   placeholder="Click on Map" />
+
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-info mt-3 mb-0">
+
+                        <i class="fa fa-map-marker-alt"></i>
+
+                        Select a location from the map. Latitude, Longitude and Address will be filled automatically.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<script>
+
+    function previewImage(event)
+    {
+        let image = document.getElementById("previewImg");
+        let uploadContent = document.getElementById("uploadContent");
+
+        if (event.target.files && event.target.files[0])
+        {
+            image.src = URL.createObjectURL(event.target.files[0]);
+            image.style.display = "block";
+            if (uploadContent) {
+                uploadContent.style.display = "none";
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        var latInput = document.getElementById("Latitude");
+        var lngInput = document.getElementById("Longitude");
+        var addressInput = document.getElementById("Address");
+
+        var lat = 21.1702;
+        var lng = 72.8311;
+
+        if (latInput && latInput.value && latInput.value.trim() !== "" &&
+            lngInput && lngInput.value && lngInput.value.trim() !== "") {
+            lat = parseFloat(latInput.value);
+            lng = parseFloat(lngInput.value);
+        } else if (latInput && lngInput) {
+            latInput.value = lat.toFixed(6);
+            lngInput.value = lng.toFixed(6);
+        }
+
+        var mapElement = document.getElementById("map");
+        if (!mapElement) return;
+
+        var map = L.map("map").setView([lat, lng], 13);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "© OpenStreetMap"
+        }).addTo(map);
+
+        var marker = L.marker([lat, lng], {
+            draggable: true
+        }).addTo(map);
+
+        function setLocation(latitude, longitude)
+        {
+            if (latInput) latInput.value = latitude.toFixed(6);
+            if (lngInput) lngInput.value = longitude.toFixed(6);
+
+            marker.setLatLng([latitude, longitude]);
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.display_name && addressInput)
+                    {
+                        addressInput.value = data.display_name;
+                    }
+                })
+                .catch(err => {
+                    console.warn("Reverse geocode request failed:", err);
+                });
+        }
+
+        map.on("click", function (e) {
+            setLocation(e.latlng.lat, e.latlng.lng);
+        });
+
+        marker.on("dragend", function () {
+            var pos = marker.getLatLng();
+            setLocation(pos.lat, pos.lng);
+        });
+
+        setTimeout(function () {
+            map.invalidateSize();
+        }, 300);
+
+    });
+
+</script>

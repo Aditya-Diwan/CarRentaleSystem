@@ -1,0 +1,243 @@
+@model CarRentalSystem.Models.Booking
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<link href="~/css/bookingsuccess.css"
+      rel="stylesheet" />
+
+<div class="booking-success-container">
+
+    <div class="booking-card">
+
+        <!-- LEFT -->
+
+        <div class="booking-left">
+
+            <div class="confirmation-header">
+
+                <div class="success-icon">
+
+                    <i class="fa fa-check"></i>
+
+                </div>
+
+                <div>
+
+                    <h2>
+                        Payment Successful
+                    </h2>
+
+                    <p>
+                        Your payment has been received and booking has been confirmed.
+                    </p>
+
+                </div>
+
+            </div>
+
+            @if (Model.Car?.CarImage != null)
+            {
+                <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Car.CarImage!)"
+                     class="car-image" />
+            }
+
+            <div class="vehicle-section">
+
+                <h3 class="car-title">
+
+                    @Model.Car?.CarName
+
+                </h3>
+
+                <p class="car-model">
+
+                    @Model.Car?.CarModel
+
+                </p>
+
+                <span class="status-badge">
+
+                    @Model.Status
+
+                </span>
+
+            </div>
+
+            <div class="booking-info">
+
+                <div class="info-box">
+
+                    <small>BOOKING ID</small>
+
+                    <h5>
+
+                        #BK-@Model.Id
+
+                    </h5>
+
+                </div>
+
+                <div class="info-box">
+
+                    <small>PICKUP DATE</small>
+
+                    <h5>
+
+                        @Model.StartDate.ToString("dd MMM yyyy")
+
+                    </h5>
+
+                </div>
+
+                <div class="info-box">
+
+                    <small>RETURN DATE</small>
+
+                    <h5>
+
+                        @Model.EndDate.ToString("dd MMM yyyy")
+
+                    </h5>
+
+                </div>
+
+                <div class="info-box">
+
+                    <small>DURATION</small>
+
+                    <h5>
+
+                        @Model.TotalDays Day(s)
+
+                    </h5>
+
+                </div>
+
+                <div class="info-box">
+
+                    <small>PAYMENT</small>
+
+                    <h5 class="text-success">
+
+                        PAID
+
+                    </h5>
+
+                </div>
+
+                <div class="info-box">
+
+                    <small>BOOKING DATE</small>
+
+                    <h5>
+
+                        @Model.BookingDate.ToString("dd MMM yyyy")
+
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div class="booking-right">
+
+            <div class="cost-card">
+
+                <h3>
+
+                    Payment Summary
+
+                </h3>
+
+                <hr />
+
+                <div class="cost-row">
+
+                    <span>
+
+                        Rental Charges
+
+                    </span>
+
+                    <span>
+
+                        ₹ @Model.TotalAmount
+
+                    </span>
+
+                </div>
+
+                <div class="cost-row">
+
+                    <span>
+
+                        Booking Fee
+
+                    </span>
+
+                    <span>
+
+                        ₹ 0
+
+                    </span>
+
+                </div>
+
+                <hr />
+
+                <div class="total-row">
+
+                    <span>
+
+                        Total Paid
+
+                    </span>
+
+                    <span>
+
+                        ₹ @Model.TotalAmount
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <a href="/User/Index"
+               class="dashboard-btn">
+
+                <i class="fa fa-home"></i>
+
+                Back To Home
+
+            </a>
+
+            <a href="/User/MyBookings"
+               class="receipt-btn">
+
+                <i class="fa fa-calendar-check"></i>
+
+                My Bookings
+
+            </a>
+
+            <a href="/User/Receipt?bookingId=@Model.Id&print=true"
+               class="print-btn">
+
+                <i class="fa fa-file-invoice"></i>
+
+                Download Official Receipt (PDF)
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

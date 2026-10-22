@@ -1,0 +1,422 @@
+@model IEnumerable<CarRentalSystem.Models.Car>
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    string userName = Context.Session.GetString("Name") ?? "Driver";
+    bool isVerified = ViewBag.IsVerified ?? false;
+    int availableCount = ViewBag.AvailableCount ?? Model.Count(c => c.VehicleStatus == "Available");
+    int totalCount = ViewBag.TotalCarsCount ?? Model.Count();
+    int activeBookings = ViewBag.ActiveUserBookingsCount ?? 0;
+}
+
+<link href="~/css/userhome.css"
+      rel="stylesheet"
+      asp-append-version="true" />
+
+<div class="user-cars-page">
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-circle-check me-2"></i>
+            <strong>Success!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- ==========================================
+            GREETING & DRIVER COMMAND HEADER
+    ========================================== -->
+    <div class="user-header-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <div class="user-page-tag">
+                    <i class="fa fa-car-side"></i>
+                    <span>Driver Mobility Hub</span>
+                </div>
+                <h1 class="user-header-title">
+                    Welcome back, @userName!
+                </h1>
+                <p class="user-header-subtitle">
+                    Select your travel dates or browse our verified luxury rental cars for instant reservations.
+                </p>
+
+                <!-- Quick Metric Chips -->
+                <div class="user-metric-chips">
+                    <div class="user-metric-chip">
+                        <i class="fa fa-circle-check text-success"></i>
+                        <span><strong>@availableCount</strong> Available Now</span>
+                    </div>
+                    <div class="user-metric-chip">
+                        <i class="fa fa-layer-group text-primary"></i>
+                        <span><strong>@totalCount</strong> In Rental Cars</span>
+                    </div>
+                    <a href="/User/MyBookings" class="user-metric-chip">
+                        <i class="fa fa-calendar-check text-primary"></i>
+                        <span><strong>@activeBookings</strong> My Bookings</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Verification Status Badge -->
+            <div>
+                @if (isVerified)
+                {
+                    <div class="driver-status-badge verified">
+                        <i class="fa fa-shield-check"></i>
+                        <span>Verified Driver</span>
+                    </div>
+                }
+                else
+                {
+                    <a href="/User/Verification" class="driver-status-badge pending" title="Click to complete verification">
+                        <i class="fa fa-triangle-exclamation"></i>
+                        <span>Verification Pending • Complete Now</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+            SEARCH & FILTER CONTROL BAR
+    ========================================== -->
+    <div class="car-control-card">
+        <form asp-action="Index" method="get" id="dateFilterForm">
+            <div class="row g-3 align-items-end">
+
+                <!-- Pickup Date -->
+                <div class="col-lg-3 col-md-6 search-field-wrapper">
+                    <label>
+                        <i class="fa fa-calendar-day text-primary me-1"></i> Pickup Date
+                    </label>
+                    <input type="date"
+                           name="startDate"
+                           class="car-date-input"
+                           min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                           value="@Context.Request.Query["startDate"]" />
+                </div>
+
+                <!-- Return Date -->
+                <div class="col-lg-3 col-md-6 search-field-wrapper">
+                    <label>
+                        <i class="fa fa-calendar-check text-primary me-1"></i> Return Date
+                    </label>
+                    <input type="date"
+                           name="endDate"
+                           class="car-date-input"
+                           min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                           value="@Context.Request.Query["endDate"]" />
+                </div>
+
+                <!-- Live Search by Name/Model -->
+                <div class="col-lg-3 col-md-6 search-field-wrapper">
+                    <label>
+                        <i class="fa fa-magnifying-glass text-primary me-1"></i> Find Vehicle
+                    </label>
+                    <input type="text"
+                           id="carSearchBox"
+                           class="car-search-input"
+                           placeholder="Filter by name, model..."
+                           oninput="onSearchInput(this.value)" />
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-lg-3 col-md-6 d-flex gap-2">
+                    <button type="submit" class="btn-car-search">
+                        <i class="fa fa-filter"></i> Check Dates
+                    </button>
+                    <a asp-action="Index" class="btn-car-reset" title="Reset date filters">
+                        Reset
+                    </a>
+                </div>
+
+            </div>
+        </form>
+
+        <!-- Category Filter Pills Strip -->
+        <div class="filter-pills-row">
+            <button type="button" class="filter-chip-btn active" onclick="applyCategoryFilter('all', this)">
+                <i class="fa fa-layer-group"></i> All Cars (@Model.Count())
+            </button>
+            <button type="button" class="filter-chip-btn" onclick="applyCategoryFilter('available', this)">
+                <i class="fa fa-circle-check text-success"></i> Available Only (@availableCount)
+            </button>
+            <button type="button" class="filter-chip-btn" onclick="applyCategoryFilter('automatic', this)">
+                <i class="fa fa-gear"></i> Automatic
+            </button>
+            <button type="button" class="filter-chip-btn" onclick="applyCategoryFilter('manual', this)">
+                <i class="fa fa-sliders"></i> Manual
+            </button>
+            <button type="button" class="filter-chip-btn" onclick="applyCategoryFilter('petrol', this)">
+                <i class="fa fa-gas-pump"></i> Petrol
+            </button>
+            <button type="button" class="filter-chip-btn" onclick="applyCategoryFilter('diesel', this)">
+                <i class="fa fa-oil-can"></i> Diesel
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+            ELEVATED VEHICLE CARDS GRID
+    ========================================== -->
+    <div class="row g-4" id="carCardsContainer">
+        @foreach (var item in Model)
+        {
+            var rawStatus = item.VehicleStatus ?? (item.Available ? "Available" : "Booked");
+            var statusClass = rawStatus.ToLower().Replace(" ", "");
+            if (statusClass == "undermaintenance") { statusClass = "maintenance"; }
+
+            string transmission = item.Transmission ?? "Automatic";
+            string fuel = item.FuelType ?? "Petrol";
+            int seats = item.SeatingCapacity ?? 5;
+
+            <div class="col-xl-4 col-md-6 car-item-col"
+                 data-car-name="@(item.CarName?.ToLower() ?? "")"
+                 data-car-model="@(item.CarModel?.ToLower() ?? "")"
+                 data-status="@statusClass"
+                 data-transmission="@transmission.ToLower()"
+                 data-fuel="@fuel.ToLower()">
+
+                <div class="user-car-card">
+
+                    <!-- Top Image Area -->
+                    <div class="user-car-img-wrapper">
+                        @if (item.CarImage != null && item.CarImage.Length > 0)
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(item.CarImage!)" alt="@item.CarName" />
+                        }
+                        else
+                        {
+                            <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=600&q=80" alt="@item.CarName" />
+                        }
+
+                        <!-- Top-Right Status Label (Admin-Matching style) -->
+                        <span class="card-status-pill-top @statusClass">
+                            @if (rawStatus == "Available")
+                            {
+                                <i class="fa fa-circle-check"></i> <span>Available</span>
+                            }
+                            else if (rawStatus == "Booked")
+                            {
+                                <i class="fa fa-clock"></i> <span>Booked</span>
+                            }
+                            else if (rawStatus == "Under Maintenance")
+                            {
+                                <i class="fa fa-wrench"></i> <span>Maintenance</span>
+                            }
+                            else
+                            {
+                                <i class="fa fa-ban"></i> <span>Inactive</span>
+                            }
+                        </span>
+
+                        <!-- Image Spec Overlays -->
+                        <span class="img-overlay-spec left">
+                            <i class="fa fa-gas-pump me-1"></i> @fuel
+                        </span>
+                        <span class="img-overlay-spec right">
+                            <i class="fa fa-gear me-1"></i> @transmission
+                        </span>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="user-car-content">
+                        <div>
+                            <h4 class="user-car-title">
+                                @item.CarName
+                            </h4>
+                            <div class="user-car-model">
+                                @(string.IsNullOrEmpty(item.CarModel) ? "Luxury Edition" : item.CarModel)
+                            </div>
+
+                            <!-- Spec Tiles -->
+                            <div class="car-specs-grid">
+                                <div class="spec-chip">
+                                    <i class="fa fa-users"></i>
+                                    <span>@seats Seats</span>
+                                </div>
+                                <div class="spec-chip">
+                                    <i class="fa fa-gear"></i>
+                                    <span>@transmission</span>
+                                </div>
+                                <div class="spec-chip">
+                                    <i class="fa fa-gas-pump"></i>
+                                    <span>@fuel</span>
+                                </div>
+                            </div>
+
+                            <!-- Pickup Landmark Hub -->
+                            <div class="car-hub-tag">
+                                <i class="fa fa-location-dot text-primary"></i>
+                                <span>@(string.IsNullOrEmpty(item.PickupLocation) ? "Verified EliteCar City Station" : item.PickupLocation)</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="user-car-footer">
+                            <div class="user-car-price">
+                                ₹ @item.PricePerDay <small>/ day</small>
+                            </div>
+
+                            @if (rawStatus == "Available")
+                            {
+                                <a href="/User/CarDetails?carId=@item.Id"
+                                   class="btn-card-reserve">
+                                    <i class="fa fa-calendar-check"></i> Reserve
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="/User/CarDetails?carId=@item.Id"
+                                   class="btn-card-details-secondary">
+                                    View Details <i class="fa fa-arrow-right"></i>
+                                </a>
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    </div>
+
+    <!-- Empty Filter Notice -->
+    <div id="noCarsMatchAlert" class="text-center py-5 d-none">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 14px;">
+            <i class="fa fa-car-side"></i>
+        </div>
+        <h5 style="font-weight: 700; color: #0f172a;">No Vehicles Match Your Filter</h5>
+        <p style="color: #64748b; font-size: 14px;">Try selecting another category or clear your search query.</p>
+        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-4" onclick="resetClientFilters()">
+            Clear Filters
+        </button>
+    </div>
+
+    <!-- ==========================================
+            SERVICE ASSURANCE STRIP
+    ========================================== -->
+    <div class="user-assurance-strip">
+        <div class="row g-3">
+            <div class="col-lg-3 col-sm-6">
+                <div class="assurance-item">
+                    <div class="assurance-icon">
+                        <i class="fa fa-shield-heart"></i>
+                    </div>
+                    <div class="assurance-text">
+                        <h6>100% Insured Rental Cars</h6>
+                        <p>Comprehensive accidental & damage coverage.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="assurance-item">
+                    <div class="assurance-icon">
+                        <i class="fa fa-id-card"></i>
+                    </div>
+                    <div class="assurance-text">
+                        <h6>Fast Digital Clearance</h6>
+                        <p>Upload license once, book instantly anywhere.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="assurance-item">
+                    <div class="assurance-icon">
+                        <i class="fa fa-location-dot"></i>
+                    </div>
+                    <div class="assurance-text">
+                        <h6>Contactless Pickup Hubs</h6>
+                        <p>Exact station GPS unlocked upon booking.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                <div class="assurance-item">
+                    <div class="assurance-icon">
+                        <i class="fa fa-credit-card"></i>
+                    </div>
+                    <div class="assurance-text">
+                        <h6>Zero Hidden Charges</h6>
+                        <p>Transparent daily rates with Stripe checkout.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Interactive Client-side Filter Script -->
+<script>
+let currentCategory = 'all';
+let currentSearch = '';
+
+function applyCategoryFilter(cat, btn) {
+    currentCategory = cat.toLowerCase();
+    document.querySelectorAll('.filter-chip-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    runCarFilter();
+}
+
+function onSearchInput(val) {
+    currentSearch = val.toLowerCase().trim();
+    runCarFilter();
+}
+
+function runCarFilter() {
+    const cards = document.querySelectorAll('.car-item-col');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+        const name = card.dataset.carName || '';
+        const model = card.dataset.carModel || '';
+        const status = card.dataset.status || '';
+        const transmission = card.dataset.transmission || '';
+        const fuel = card.dataset.fuel || '';
+
+        // Match search
+        const matchesSearch = !currentSearch || name.includes(currentSearch) || model.includes(currentSearch);
+
+        // Match category
+        let matchesCategory = false;
+        if (currentCategory === 'all') {
+            matchesCategory = true;
+        } else if (currentCategory === 'available') {
+            matchesCategory = (status === 'available');
+        } else if (currentCategory === 'automatic' || currentCategory === 'manual') {
+            matchesCategory = (transmission === currentCategory);
+        } else if (currentCategory === 'petrol' || currentCategory === 'diesel') {
+            matchesCategory = (fuel === currentCategory);
+        }
+
+        if (matchesSearch && matchesCategory) {
+            card.style.display = '';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    const alertBox = document.getElementById('noCarsMatchAlert');
+    if (alertBox) {
+        if (visibleCount === 0) {
+            alertBox.classList.remove('d-none');
+        } else {
+            alertBox.classList.add('d-none');
+        }
+    }
+}
+
+function resetClientFilters() {
+    const searchBox = document.getElementById('carSearchBox');
+    if (searchBox) searchBox.value = '';
+    currentSearch = '';
+    applyCategoryFilter('all', document.querySelector('.filter-chip-btn'));
+}
+</script>

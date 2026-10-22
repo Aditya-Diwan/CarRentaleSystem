@@ -1,0 +1,176 @@
+@model IEnumerable<CarRentalSystem.Models.Booking>
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<link href="~/css/mybookings.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="my-bookings-container">
+
+    <!-- PAGE HEADER -->
+    <div class="bookings-header-card">
+        <div>
+            <h1>My Bookings</h1>
+            <p>Track, manage, and download receipts for all your vehicle reservations.</p>
+        </div>
+
+        <div class="booking-count-pill">
+            <i class="fa fa-calendar-check me-1"></i> @Model.Count() Reservation@(Model.Count() == 1 ? "" : "s")
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-bookings-box">
+            <div class="empty-icon">
+                <i class="fa fa-car-side"></i>
+            </div>
+            <h3>No Bookings Found</h3>
+            <p>You haven't reserved any vehicles yet. Explore our premium luxury car rental collection and book your ideal car today.</p>
+            <a href="/User/Index" class="btn-browse-cars">
+                <i class="fa fa-magnifying-glass"></i> Browse Available Rental Cars
+            </a>
+        </div>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            var rawStatus = (item.Status ?? "Confirmed").ToLower();
+            var statusClass = rawStatus;
+            if (rawStatus == "paid") { statusClass = "confirmed"; }
+
+            <div class="booking-item-card">
+
+                <!-- Vehicle Thumbnail -->
+                <div class="booking-media-col">
+                    @if (item.Car?.CarImage != null && item.Car.CarImage.Length > 0)
+                    {
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Car.CarImage!)" alt="@item.Car.CarName" />
+                    }
+                    else
+                    {
+                        <img src="https://via.placeholder.com/400x260?text=No+Vehicle+Image" alt="Vehicle Image" />
+                    }
+
+                    @if (!string.IsNullOrEmpty(item.Car?.CarType))
+                    {
+                        <span class="media-tag-category">
+                            @item.Car.CarType
+                        </span>
+                    }
+
+                    <span class="media-badge-status @statusClass">
+                        @if (statusClass == "confirmed" || statusClass == "paid")
+                        {
+                            <i class="fa fa-circle-check"></i> <span>Confirmed</span>
+                        }
+                        else if (statusClass == "completed")
+                        {
+                            <i class="fa fa-flag-checkered"></i> <span>Completed</span>
+                        }
+                        else if (statusClass == "cancelled")
+                        {
+                            <i class="fa fa-ban"></i> <span>Cancelled</span>
+                        }
+                        else
+                        {
+                            <i class="fa fa-clock"></i> <span>@item.Status</span>
+                        }
+                    </span>
+                </div>
+
+                <!-- Booking Details Body -->
+                <div class="booking-details-col">
+
+                    <div>
+                        <!-- Header: Car Title & Booking Ref -->
+                        <div class="card-top-header">
+                            <div class="car-title-group">
+                                <h2>@(item.Car?.CarName ?? "Vehicle Reservation")</h2>
+                                <p>@(item.Car?.CarModel ?? "Standard Vehicle") • Booked on @item.BookingDate.ToString("dd MMM yyyy")</p>
+                            </div>
+
+                            <span class="booking-ref-badge">
+                                <i class="fa fa-hashtag text-primary"></i> BK-@item.Id
+                            </span>
+                        </div>
+
+                        <!-- 4-Strip Booking Stats -->
+                        <div class="booking-stats-strip">
+                            <div class="strip-item">
+                                <span class="strip-label">Pickup Date</span>
+                                <span class="strip-value">@item.StartDate.ToString("dd MMM yyyy")</span>
+                            </div>
+
+                            <div class="strip-item">
+                                <span class="strip-label">Return Date</span>
+                                <span class="strip-value">@item.EndDate.ToString("dd MMM yyyy")</span>
+                            </div>
+
+                            <div class="strip-item">
+                                <span class="strip-label">Duration</span>
+                                <span class="strip-value">@item.TotalDays Day(s)</span>
+                            </div>
+
+                            <div class="strip-item">
+                                <span class="strip-label">Total Amount</span>
+                                <span class="strip-value price">₹@item.TotalAmount.ToString("N0")</span>
+                            </div>
+                        </div>
+
+                        <!-- Pickup Location Section -->
+                        <div class="booking-location-box">
+                            <h5>
+                                <i class="fa fa-location-dot"></i> @(string.IsNullOrEmpty(item.PickupLocation) ? (item.Car?.PickupLocation ?? "Pickup Station") : item.PickupLocation)
+                            </h5>
+                            <p>
+                                @(string.IsNullOrEmpty(item.Address) ? (item.Car?.Address ?? "Station address available at counter") : item.Address)
+                                @if (!string.IsNullOrEmpty(item.Landmark) || !string.IsNullOrEmpty(item.Car?.Landmark))
+                                {
+                                    <span class="landmark-inline">• Landmark: @(item.Landmark ?? item.Car?.Landmark)</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Action Buttons: Single Map Configuration + Receipt -->
+                    <div class="card-bottom-actions">
+                        <div class="actions-left-group">
+                            @* SINGLE MAP BUTTON: Directly opens Google Maps directions to the pickup location *@
+                            @if (item.Car?.Latitude != null && item.Car?.Longitude != null)
+                            {
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=@(item.Car.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)),@(item.Car.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn-single-map">
+                                    <i class="fa fa-map-location-dot"></i> View Pickup Location & Directions
+                                </a>
+                            }
+                            else if (item.Latitude != null && item.Longitude != null)
+                            {
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=@(item.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)),@(item.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn-single-map">
+                                    <i class="fa fa-map-location-dot"></i> View Pickup Location & Directions
+                                </a>
+                            }
+                        </div>
+
+                        <div class="actions-right-group">
+                            <a href="/User/Receipt?bookingId=@item.Id"
+                               class="btn-view-receipt">
+                                <i class="fa fa-file-invoice"></i> Download Receipt (PDF)
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    }
+
+</div>

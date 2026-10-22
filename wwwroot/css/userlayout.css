@@ -1,0 +1,467 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    overflow-x: hidden;
+}
+
+/* ===========================
+   MAIN LAYOUT
+=========================== */
+
+.main-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===========================
+   SIDEBAR
+=========================== */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: #0f172a;
+    color: #fff;
+    padding: 25px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+/* ===========================
+   BRAND
+=========================== */
+
+.brand-section {
+    text-align: center;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+    .logo i {
+        color: #3b82f6;
+    }
+
+.brand-subtitle {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.sidebar hr {
+    border-color: rgba(255,255,255,.12);
+    margin: 25px 0;
+}
+
+/* ===========================
+   MENU
+=========================== */
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #cbd5e1;
+    transition: .3s;
+}
+
+    .menu-link:hover {
+        background: #1e293b;
+        color: #fff;
+    }
+
+    .menu-link i {
+        width: 22px;
+    }
+/* ===========================
+   USER CARD
+=========================== */
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    background: linear-gradient(135deg,#1e293b,#334155);
+    text-decoration: none;
+    color: #fff;
+    transition: all .3s ease;
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+    .user-card:hover {
+        background: linear-gradient(135deg,#2563eb,#1d4ed8);
+        color: #fff;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(37,99,235,.30);
+    }
+
+.user-icon {
+    font-size: 44px;
+    color: #fff;
+}
+
+.user-details {
+    flex: 1;
+}
+
+    .user-details strong {
+        display: block;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .user-details small {
+        display: block;
+        margin-top: 3px;
+        color: rgba(255,255,255,.75);
+    }
+
+.user-card:hover small {
+    color: #fff;
+}
+
+.profile-arrow {
+    font-size: 14px;
+    opacity: .7;
+    transition: .3s;
+}
+
+.user-card:hover .profile-arrow {
+    opacity: 1;
+    transform: translateX(5px);
+}
+.sidebar-profile-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+
+.top-profile-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #2563eb;
+}
+
+.profile-avatar-img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #2563eb;
+}
+/* ===========================
+   LOGOUT
+=========================== */
+
+.logout-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #dc2626;
+    color: #fff;
+    text-decoration: none;
+    padding: 13px;
+    border-radius: 12px;
+    transition: .3s;
+}
+
+    .logout-btn:hover {
+        background: #b91c1c;
+        color: #fff;
+    }
+
+/* ===========================
+   TOPBAR
+=========================== */
+
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 280px;
+    width: calc(100% - 280px);
+    height: 72px;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 28px;
+    border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
+    z-index: 999;
+    box-shadow: 0 2px 12px rgba(0,0,0,.05);
+}
+
+    .topbar h4 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+/* ===========================
+   PROFILE
+=========================== */
+
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 10px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .3s;
+}
+
+    .profile-btn:hover {
+        background: #eff6ff;
+        border-color: #3b82f6;
+    }
+
+    .profile-btn span {
+        color: #1e293b;
+    }
+
+    .profile-btn i:first-child {
+        color: #2563eb;
+        font-size: 24px;
+    }
+.profile-header strong {
+    display: block;
+    color: #1e293b;
+}
+
+.profile-header small {
+    color: #64748b;
+}
+
+.profile-menu hr {
+    margin: 0;
+    border-color: #e5e7eb;
+}
+.profile-menu {
+    position: absolute;
+    right: 0;
+    top: 60px;
+    width: 260px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0,0,0,.15);
+    display: none;
+    overflow: hidden;
+}
+
+.profile-dropdown:hover .profile-menu {
+    display: block;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+.profile-avatar {
+    font-size: 42px;
+    color: #2563eb;
+}
+
+.profile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    color: #334155;
+    text-decoration: none;
+    transition: .3s;
+}
+
+    .profile-menu a:hover {
+        background: #eff6ff;
+    }
+
+.top-profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #2563eb;
+}
+
+.profile-avatar-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #2563eb;
+}
+/* ===========================
+   CONTENT AREA
+=========================== */
+
+.content-area {
+    margin-left: 280px;
+    margin-top: 72px;
+    width: calc(100% - 280px);
+    min-height: calc(100vh - 72px);
+    padding: 25px;
+    background: #f4f7fb;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    transition: all .3s ease;
+}
+
+    /* Remove Bootstrap Container Gap */
+
+    .content-area .container,
+    .content-area .container-fluid {
+        max-width: 100%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+/* ===========================
+   SCROLLBAR
+=========================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #64748b;
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background: #e5e7eb;
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+
+.menu-link,
+.logout-btn,
+.profile-btn {
+    transition: all .3s ease;
+}
+
+.sidebar,
+.topbar,
+.content-area {
+    transition: all .3s ease;
+}
+
+/* ===========================
+   MOBILE RESPONSIVE
+=========================== */
+
+@media (max-width:992px) {
+
+    .main-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+
+    .topbar {
+        position: relative;
+        left: 0;
+        width: 100%;
+        height: 65px;
+        padding: 0 20px;
+    }
+
+    .content-area {
+        margin-left: 0;
+        margin-top: 0;
+        width: 100%;
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .profile-menu {
+        right: 10px;
+    }
+}
+
+@media (max-width:768px) {
+
+    .logo {
+        font-size: 26px;
+    }
+
+    .topbar h4 {
+        font-size: 18px;
+    }
+
+    .profile-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+        .profile-btn i:first-child {
+            font-size: 18px;
+        }
+
+    .profile-menu {
+        width: 220px;
+    }
+
+    .user-card {
+        padding: 12px;
+    }
+}
+
+@media (max-width:576px) {
+
+    .content-area {
+        padding: 15px;
+    }
+
+    .topbar {
+        padding: 0 15px;
+    }
+
+    .sidebar {
+        padding: 18px;
+    }
+}

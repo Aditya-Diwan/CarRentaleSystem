@@ -1,0 +1,383 @@
+/* ==========================================================================
+   MY BOOKINGS PAGE STYLES - EliteCar Rental System
+   ========================================================================== */
+
+.my-bookings-container {
+    padding: 10px 0 40px;
+}
+
+.bookings-header-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px 30px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.06);
+    border: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.bookings-header-card h1 {
+    font-size: 30px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px;
+}
+
+.bookings-header-card p {
+    color: #64748b;
+    margin: 0;
+    font-size: 15px;
+}
+
+.booking-count-pill {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Empty State */
+.empty-bookings-box {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 60px 30px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.04);
+}
+
+.empty-bookings-box .empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #eff6ff;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 20px;
+}
+
+.empty-bookings-box h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.empty-bookings-box p {
+    color: #64748b;
+    font-size: 15px;
+    max-width: 420px;
+    margin: 0 auto 24px;
+}
+
+.btn-browse-cars {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff !important;
+    padding: 12px 28px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(37,99,235,0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-browse-cars:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(37,99,235,0.35);
+}
+
+/* Redesigned Booking Card */
+.booking-item-card {
+    background: #ffffff;
+    border-radius: 22px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.05);
+    margin-bottom: 24px;
+    overflow: hidden;
+    display: flex;
+    transition: all 0.25s ease;
+}
+
+.booking-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px rgba(15,23,42,0.09);
+    border-color: #cbd5e1;
+}
+
+.booking-media-col {
+    width: 300px;
+    position: relative;
+    background: #f8fafc;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.booking-media-col img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.booking-item-card:hover .booking-media-col img {
+    transform: scale(1.03);
+}
+
+.media-tag-category {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.media-badge-status {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.media-badge-status.confirmed { background: #dcfce7; color: #15803d; }
+.media-badge-status.active { background: #dbeafe; color: #1e40af; }
+.media-badge-status.completed { background: #f1f5f9; color: #475569; }
+.media-badge-status.cancelled { background: #fee2e2; color: #b91c1c; }
+
+/* Booking Card Body */
+.booking-details-col {
+    flex: 1;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.car-title-group h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px;
+}
+
+.car-title-group p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.booking-ref-badge {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Timeline & Stats 4-Column Grid */
+.booking-stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.strip-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.strip-item .strip-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.strip-item .strip-value {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.strip-item .strip-value.price {
+    color: #2563eb;
+    font-size: 16px;
+}
+
+/* Location Card inside Booking */
+.booking-location-box {
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.booking-location-box h5 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.booking-location-box h5 i {
+    color: #ef4444;
+}
+
+.booking-location-box p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+}
+
+.booking-location-box .landmark-inline {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #475569;
+    font-weight: 600;
+}
+
+/* Card Actions Bar (Single Map Button + Receipt Button) */
+.card-bottom-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.actions-left-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.actions-right-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Single unified map button */
+.btn-single-map {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eff6ff;
+    color: #2563eb !important;
+    border: 1px solid #bfdbfe;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-single-map:hover {
+    background: #2563eb;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+}
+
+/* Receipt Action Button */
+.btn-view-receipt {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #0f172a;
+    color: #ffffff !important;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(15,23,42,0.15);
+}
+
+.btn-view-receipt:hover {
+    background: #1e293b;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15,23,42,0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .booking-item-card {
+        flex-direction: column;
+    }
+    .booking-media-col {
+        width: 100%;
+        height: 220px;
+    }
+    .booking-stats-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .card-bottom-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .actions-left-group, .actions-right-group {
+        width: 100%;
+        justify-content: stretch;
+    }
+    .btn-single-map, .btn-view-receipt {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,782 @@
+/* ==========================================
+            PROFILE PAGE
+========================================== */
+
+.profile-page {
+    padding: 20px;
+}
+
+/* ==========================================
+            PAGE HEADER
+========================================== */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.page-tag {
+    display: inline-block;
+    background: #dbeafe;
+    color: #2563eb;
+    padding: 7px 15px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.page-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 5px;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 15px;
+}
+
+/* ==========================================
+            CARD
+========================================== */
+
+.profile-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 35px;
+    display: flex;
+    gap: 40px;
+    box-shadow: 0 10px 35px rgba(15,23,42,.08);
+    margin-bottom: 30px;
+}
+
+/* ==========================================
+            LEFT PANEL
+========================================== */
+
+.profile-left {
+    width: 320px;
+    text-align: center;
+}
+
+.profile-image-box {
+    margin-bottom: 20px;
+}
+
+.profile-image {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid #eff6ff;
+    box-shadow: 0 10px 30px rgba(37,99,235,.20);
+}
+
+/* ==========================================
+            BUTTON
+========================================== */
+
+.upload-btn {
+    display: inline-block;
+    background: #2563eb;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: .3s;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+    .upload-btn:hover {
+        background: #1d4ed8;
+    }
+
+.photo-confirm-box {
+    background: #f8fafc;
+    border: 2px dashed #2563eb;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(37,99,235,.1);
+}
+
+.photo-confirm-badge {
+    font-size: 13px;
+    font-weight: 700;
+    color: #15803d;
+}
+
+.confirm-photo-btn {
+    background: #16a34a !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600;
+    padding: 9px 14px;
+    border-radius: 10px;
+    transition: .2s;
+}
+
+.confirm-photo-btn:hover {
+    background: #15803d !important;
+    transform: translateY(-1px);
+}
+
+.cancel-photo-btn {
+    border: 1px solid #cbd5e1 !important;
+    color: #64748b !important;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 10px;
+    background: white;
+}
+
+.cancel-photo-btn:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+/* ==========================================
+        ACCOUNT INFO
+========================================== */
+
+.account-info {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 22px;
+    text-align: left;
+}
+
+    .account-info h4 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 18px;
+        color: #0f172a;
+    }
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-item span:first-child {
+        color: #64748b;
+    }
+
+    .info-item strong {
+        color: #0f172a;
+    }
+
+/* ==========================================
+            BADGES
+========================================== */
+
+.badge {
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.verified {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.active {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+/* ==========================================
+        RIGHT PANEL
+========================================== */
+
+.profile-right {
+    flex: 1;
+}
+
+    .profile-right h3 {
+        font-size: 25px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: #0f172a;
+    }
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 22px;
+}
+
+/* ==========================================
+            FORM
+========================================== */
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.form-control {
+    border-radius: 12px;
+    min-height: 48px;
+    border: 1px solid #d1d5db;
+}
+
+textarea.form-control {
+    resize: none;
+    min-height: 100px;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 .15rem rgba(37,99,235,.15);
+}
+
+/* ==========================================
+        SAVE BUTTON
+========================================== */
+
+.save-section {
+    margin-top: 35px;
+    text-align: right;
+}
+
+.save-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+    .save-btn:hover {
+        background: #1d4ed8;
+    }
+/* ==========================================
+            CARD HEADER
+========================================== */
+
+.card-header {
+    margin-bottom: 30px;
+}
+
+    .card-header h3 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+
+        .card-header h3 i {
+            color: #2563eb;
+            margin-right: 10px;
+        }
+
+    .card-header p {
+        color: #64748b;
+        margin: 0;
+    }
+
+/* ==========================================
+        SECONDARY BUTTON
+========================================== */
+
+.secondary-btn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+    .secondary-btn:hover {
+        background: #1d4ed8;
+    }
+
+/* ==========================================
+        BOOKING SUMMARY
+========================================== */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 20px;
+}
+
+.summary-box {
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    color: white;
+    border-radius: 18px;
+    padding: 30px;
+    text-align: center;
+    transition: .3s;
+}
+
+    .summary-box:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 35px rgba(37,99,235,.30);
+    }
+
+    .summary-box i {
+        font-size: 34px;
+        margin-bottom: 18px;
+    }
+
+    .summary-box h2 {
+        font-size: 34px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .summary-box span {
+        font-size: 15px;
+        opacity: .9;
+    }
+/* ===========================
+        DANGER ZONE
+=========================== */
+
+.danger-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    padding: 30px;
+    margin-top: 30px;
+    background: #fff5f5;
+    border: 2px solid #fecaca;
+    border-radius: 18px;
+}
+
+.danger-left {
+    flex: 1;
+}
+
+    .danger-left h3 {
+        color: #dc2626;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+        .danger-left h3 i {
+            margin-right: 10px;
+        }
+
+.danger-text {
+    color: #6b7280;
+    margin-bottom: 18px;
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+.danger-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .danger-list li {
+        margin-bottom: 10px;
+        color: #374151;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .danger-list i {
+        color: #16a34a;
+        font-size: 14px;
+    }
+
+.delete-btn {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+    white-space: nowrap;
+}
+
+    .delete-btn:hover {
+        background: #b91c1c;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+    }
+
+    .delete-btn i {
+        margin-right: 8px;
+    }
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+    .danger-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .delete-btn {
+        width: 100%;
+    }
+}
+/* ==========================================
+        SPACING
+========================================== */
+
+.mt-3 {
+    margin-top: 20px;
+}
+
+.mt-4 {
+    margin-top: 35px;
+}
+
+/* ==========================================
+        RESPONSIVE
+========================================== */
+
+@media (max-width:1200px) {
+
+    .summary-grid {
+        grid-template-columns: repeat(2,1fr);
+    }
+}
+
+@media (max-width:992px) {
+
+    .profile-card {
+        flex-direction: column;
+    }
+
+    .profile-left {
+        width: 100%;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .danger-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width:768px) {
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-image {
+        width: 150px;
+        height: 150px;
+    }
+
+    .page-title {
+        font-size: 28px;
+    }
+
+    .profile-card {
+        padding: 25px;
+    }
+
+    .save-section {
+        text-align: center;
+    }
+}
+
+@media (max-width:576px) {
+
+    .profile-page {
+        padding: 15px;
+    }
+
+    .profile-card {
+        padding: 20px;
+    }
+
+    .summary-box {
+        padding: 20px;
+    }
+
+    .upload-btn,
+    .save-btn,
+    .secondary-btn,
+    .delete-btn {
+        width: 100%;
+    }
+}
+/* ==========================================
+        ADMIN PROFILE
+========================================== */
+
+/* Administrator Badge */
+
+.admin-badge {
+    background: #2563eb;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Dashboard Summary Icons */
+
+.summary-box i {
+    color: #ffffff;
+}
+
+/* Profile Image Hover */
+
+.profile-image {
+    transition: .35s;
+}
+
+.profile-image:hover {
+    transform: scale(1.05);
+}
+
+/* Upload Button */
+
+.upload-btn i {
+    margin-right: 8px;
+}
+
+/* Save Button */
+
+.save-btn i,
+.secondary-btn i,
+.delete-btn i {
+    margin-right: 8px;
+}
+
+/* Readonly Input */
+
+input[readonly] {
+    background: #f8fafc;
+    cursor: not-allowed;
+}
+
+/* Account Info */
+
+.account-info .info-item strong {
+    font-weight: 600;
+}
+
+/* Better Summary Animation */
+
+.summary-box {
+    cursor: default;
+}
+
+/* ==========================================
+        CHANGE PASSWORD (CLEAN & SPACIOUS)
+========================================== */
+
+.password-row-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.password-row-grid .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-input-wrapper .form-control {
+    width: 100%;
+    min-height: 52px;
+    padding: 12px 46px 12px 18px;
+    border-radius: 12px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    color: #0f172a;
+    transition: all 0.2s ease;
+}
+
+.password-input-wrapper .form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    background: #ffffff;
+}
+
+.btn-toggle-password {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 8px 10px;
+    font-size: 16px;
+    transition: color 0.2s;
+    z-index: 2;
+}
+
+.btn-toggle-password:hover {
+    color: #0f172a;
+}
+
+@media (max-width: 992px) {
+    .password-row-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================
+        DANGER ZONE (MODERN REDESIGNED)
+========================================== */
+
+.modern-danger-zone {
+    background: linear-gradient(180deg, #fffafa 0%, #fff5f5 100%);
+    border: 1.5px solid #fecaca;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.06);
+    transition: all 0.3s ease;
+    margin-top: 35px;
+}
+
+.modern-danger-zone:hover {
+    border-color: #f87171;
+    box-shadow: 0 12px 30px rgba(220, 38, 38, 0.10);
+}
+
+.danger-icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: #fee2e2;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.danger-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #991b1b;
+    margin: 0;
+}
+
+.danger-subtitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: #dc2626;
+}
+
+.danger-text {
+    font-size: 14.5px;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.danger-checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 20px;
+    margin-top: 15px;
+}
+
+.danger-check-item {
+    display: flex;
+    align-items: flex-start;
+    font-size: 13.5px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.danger-check-item i {
+    font-size: 15px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.modern-delete-btn {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    color: #ffffff;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.28);
+    transition: all 0.25s ease;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.modern-delete-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.40);
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+}
+
+@media (max-width: 992px) {
+    .danger-checklist-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .modern-delete-btn,
+    .btn-update-password {
+        width: 100%;
+        justify-content: center;
+    }
+}

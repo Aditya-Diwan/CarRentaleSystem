@@ -1,0 +1,334 @@
+@model IEnumerable<CarRentalSystem.Models.UserVerification>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/css/adminverification.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="admin-verification-page">
+
+    <!-- HEADER -->
+    <div class="verification-header-box">
+        <div>
+            <h1>Customer Verification Center</h1>
+            <p>Review uploaded government IDs, driving licenses, and digital signatures for rental approval.</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-circle-check me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-triangle-exclamation me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- STATS COUNTER -->
+    <div class="ver-stats-row">
+        <div class="ver-stat-card">
+            <div class="ver-stat-icon total">
+                <i class="fa fa-folder-open"></i>
+            </div>
+            <div class="ver-stat-info">
+                <div class="ver-stat-num">@Model.Count()</div>
+                <div class="ver-stat-label">Total Submissions</div>
+            </div>
+        </div>
+
+        <div class="ver-stat-card">
+            <div class="ver-stat-icon pending">
+                <i class="fa fa-clock"></i>
+            </div>
+            <div class="ver-stat-info">
+                <div class="ver-stat-num">@Model.Count(x => x.Status == "Pending" || string.IsNullOrEmpty(x.Status))</div>
+                <div class="ver-stat-label">Pending Review</div>
+            </div>
+        </div>
+
+        <div class="ver-stat-card">
+            <div class="ver-stat-icon approved">
+                <i class="fa fa-circle-check"></i>
+            </div>
+            <div class="ver-stat-info">
+                <div class="ver-stat-num">@Model.Count(x => x.Status == "Approved")</div>
+                <div class="ver-stat-label">Approved</div>
+            </div>
+        </div>
+
+        <div class="ver-stat-card">
+            <div class="ver-stat-icon rejected">
+                <i class="fa fa-circle-xmark"></i>
+            </div>
+            <div class="ver-stat-info">
+                <div class="ver-stat-num">@Model.Count(x => x.Status == "Rejected")</div>
+                <div class="ver-stat-label">Rejected</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOOLBAR & FILTERS -->
+    <div class="ver-toolbar-card">
+        <div class="ver-filter-group">
+            <button type="button" class="ver-filter-pill active" onclick="filterVerCards('all', this)">All Submissions</button>
+            <button type="button" class="ver-filter-pill" onclick="filterVerCards('pending', this)">Pending</button>
+            <button type="button" class="ver-filter-pill" onclick="filterVerCards('approved', this)">Approved</button>
+            <button type="button" class="ver-filter-pill" onclick="filterVerCards('rejected', this)">Rejected</button>
+        </div>
+
+        <div class="ver-search-box">
+            <i class="fa fa-search"></i>
+            <input type="text" id="verSearchInput" placeholder="Search customer name or email..." onkeyup="searchVerCards()" />
+        </div>
+    </div>
+
+    <!-- CARDS LIST -->
+    <div class="ver-cards-list" id="verListContainer">
+        @if (!Model.Any())
+        {
+            <div class="card p-5 text-center text-muted border-0 shadow-sm rounded-4">
+                <i class="fa fa-folder-open fa-3x mb-3 text-secondary"></i>
+                <h5>No verification requests submitted yet.</h5>
+            </div>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                var status = (item.Status ?? "Pending").ToLower();
+                var initials = !string.IsNullOrEmpty(item.User?.FullName) ? item.User.FullName.Substring(0, Math.Min(2, item.User.FullName.Length)).ToUpper() : "C";
+
+                <div class="ver-item-card ver-card-item"
+                     data-status="@status"
+                     data-name="@(item.User?.FullName ?? "")"
+                     data-email="@(item.User?.Email ?? "")">
+
+                    <!-- User Meta Header -->
+                    <div class="ver-card-top">
+                        <div class="ver-user-meta">
+                            <div class="ver-user-avatar">
+                                @if (item.User?.ProfileImage != null && item.User.ProfileImage.Length > 0)
+                                {
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.User.ProfileImage)" alt="@item.User.FullName" />
+                                }
+                                else
+                                {
+                                    <span>@initials</span>
+                                }
+                            </div>
+
+                            <div class="ver-user-text">
+                                <h3>@(item.User?.FullName ?? "Registered Customer")</h3>
+                                <p><i class="fa fa-envelope me-1"></i> @(item.User?.Email ?? "N/A") • <i class="fa fa-phone ms-2 me-1"></i> @(!string.IsNullOrEmpty(item.User?.PhoneNumber) ? item.User.PhoneNumber : "No phone")</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="ver-status-pill @status">
+                                @if (status == "approved")
+                                {
+                                    <i class="fa fa-circle-check"></i> <span>Approved</span>
+                                }
+                                else if (status == "rejected")
+                                {
+                                    <i class="fa fa-ban"></i> <span>Rejected</span>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-clock"></i> <span>Pending Review</span>
+                                }
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Body: Submission metadata & 4 Documents Grid -->
+                    <div class="ver-card-body">
+                        <div class="ver-sub-info-row">
+                            <span>Reference: <strong>#VER-@item.Id</strong></span>
+                            <span>Submitted: <strong>@item.UploadDate.ToString("dd MMM yyyy, hh:mm tt")</strong></span>
+                            @if (item.VerifiedDate != null)
+                            {
+                                <span>Decision Date: <strong>@item.VerifiedDate.Value.ToString("dd MMM yyyy")</strong></span>
+                            }
+                        </div>
+
+                        <div class="documents-4-grid">
+                            <!-- Government ID -->
+                            <div class="doc-tile">
+                                <div class="doc-img-wrap" onclick="viewDocumentModal('Government ID', '@(item.GovernmentId != null ? Convert.ToBase64String(item.GovernmentId) : "")')">
+                                    @if (item.GovernmentId != null)
+                                    {
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(item.GovernmentId)" alt="Government ID" />
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-center h-100 text-muted small">Not Uploaded</div>
+                                    }
+                                </div>
+                                <div class="doc-label-bar">
+                                    <i class="fa fa-id-badge text-primary"></i> Government ID
+                                </div>
+                            </div>
+
+                            <!-- Digital Signature -->
+                            <div class="doc-tile">
+                                <div class="doc-img-wrap" onclick="viewDocumentModal('Digital Signature', '@(item.DigitalSignature != null ? Convert.ToBase64String(item.DigitalSignature) : "")')">
+                                    @if (item.DigitalSignature != null)
+                                    {
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(item.DigitalSignature)" alt="Signature" />
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-center h-100 text-muted small">Not Uploaded</div>
+                                    }
+                                </div>
+                                <div class="doc-label-bar">
+                                    <i class="fa fa-signature text-primary"></i> Signature
+                                </div>
+                            </div>
+
+                            <!-- License Front -->
+                            <div class="doc-tile">
+                                <div class="doc-img-wrap" onclick="viewDocumentModal('License Front', '@(item.LicenseFront != null ? Convert.ToBase64String(item.LicenseFront) : "")')">
+                                    @if (item.LicenseFront != null)
+                                    {
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(item.LicenseFront)" alt="License Front" />
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-center h-100 text-muted small">Not Uploaded</div>
+                                    }
+                                </div>
+                                <div class="doc-label-bar">
+                                    <i class="fa fa-address-card text-primary"></i> License Front
+                                </div>
+                            </div>
+
+                            <!-- License Back -->
+                            <div class="doc-tile">
+                                <div class="doc-img-wrap" onclick="viewDocumentModal('License Back', '@(item.LicenseBack != null ? Convert.ToBase64String(item.LicenseBack) : "")')">
+                                    @if (item.LicenseBack != null)
+                                    {
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(item.LicenseBack)" alt="License Back" />
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-center h-100 text-muted small">Not Uploaded</div>
+                                    }
+                                </div>
+                                <div class="doc-label-bar">
+                                    <i class="fa fa-address-card text-primary"></i> License Back
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions Footer -->
+                        <div class="ver-card-actions">
+                            @if (item.Status != "Approved")
+                            {
+                                <a href="/Admin/ApproveVerification?verificationId=@item.Id" class="btn-approve-ver" onclick="return confirm('Approve verification for this customer?');">
+                                    <i class="fa fa-check"></i> Approve Customer
+                                </a>
+                            }
+
+                            @if (item.Status != "Rejected")
+                            {
+                                <a href="/Admin/RejectVerification?verificationId=@item.Id" class="btn-reject-ver" onclick="return confirm('Reject verification for this customer?');">
+                                    <i class="fa fa-xmark"></i> Reject
+                                </a>
+                            }
+
+                            <a href="/Admin/DeleteVerification?verificationId=@item.Id" class="btn-delete-ver" onclick="return confirm('Permanently delete this verification record?');">
+                                <i class="fa fa-trash-can"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        }
+    </div>
+
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="docPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="docModalTitle">Document Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <img id="docModalImg" src="" class="img-fluid rounded-3 shadow-sm" style="max-height: 520px; object-fit: contain;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let activeVerFilter = "all";
+
+    function filterVerCards(filterType, btnElement) {
+        activeVerFilter = filterType;
+
+        document.querySelectorAll('.ver-filter-pill').forEach(btn => btn.classList.remove('active'));
+        if (btnElement) {
+            btnElement.classList.add('active');
+        }
+
+        applyVerFilters();
+    }
+
+    function searchVerCards() {
+        applyVerFilters();
+    }
+
+    function applyVerFilters() {
+        const query = (document.getElementById('verSearchInput')?.value || '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.ver-card-item');
+
+        cards.forEach(card => {
+            const status = card.getAttribute('data-status') || '';
+            const name = (card.getAttribute('data-name') || '').toLowerCase();
+            const email = (card.getAttribute('data-email') || '').toLowerCase();
+
+            let matchesFilter = false;
+
+            if (activeVerFilter === "all") {
+                matchesFilter = true;
+            } else if (activeVerFilter === "pending") {
+                matchesFilter = status === "pending" || status === "";
+            } else if (activeVerFilter === "approved") {
+                matchesFilter = status === "approved";
+            } else if (activeVerFilter === "rejected") {
+                matchesFilter = status === "rejected";
+            }
+
+            let matchesSearch = true;
+            if (query.length > 0) {
+                matchesSearch = name.includes(query) || email.includes(query);
+            }
+
+            card.style.display = (matchesFilter && matchesSearch) ? "block" : "none";
+        });
+    }
+
+    function viewDocumentModal(title, base64) {
+        if (!base64) return;
+        document.getElementById('docModalTitle').innerText = title;
+        document.getElementById('docModalImg').src = 'data:image/png;base64,' + base64;
+        const modal = new bootstrap.Modal(document.getElementById('docPreviewModal'));
+        modal.show();
+    }
+</script>

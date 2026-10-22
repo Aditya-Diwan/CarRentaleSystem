@@ -1,0 +1,117 @@
+﻿@model CarRentalSystem.Models.UserVerification
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<link href="~/css/verification.css"
+      rel="stylesheet" />
+
+<div class="verification-page">
+
+    <div class="verification-header">
+
+        <h1>
+            Edit Verification Documents
+        </h1>
+
+        <p>
+            Upload new documents and resubmit for approval.
+        </p>
+
+    </div>
+
+    <div class="verification-card">
+
+        <form asp-action="EditVerification"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="upload-card">
+
+                        <label>
+                            Government Photo ID
+                        </label>
+
+                        <input type="file"
+                               name="GovernmentId"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+                <div class="col-md-6 mb-4">
+
+                    <div class="upload-card">
+
+                        <label>
+                            Digital Signature
+                        </label>
+
+                        <input type="file"
+                               name="DigitalSignature"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="upload-card">
+
+                        <label>
+                            Driving License Front
+                        </label>
+
+                        <input type="file"
+                               name="LicenseFront"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 mb-4">
+
+                    <div class="upload-card">
+
+                        <label>
+                            Driving License Back
+                        </label>
+
+                        <input type="file"
+                               name="LicenseBack"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+               
+
+            </div>
+
+            <button type="submit"
+                    class="verify-btn">
+
+                Update Verification
+
+            </button>
+
+            <a href="/User/Verification"
+               class="btn btn-secondary ms-2">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>

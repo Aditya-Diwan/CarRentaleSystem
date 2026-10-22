@@ -1,0 +1,302 @@
+@model IEnumerable<CarRentalSystem.Models.Car>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/css/managecar.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="manage-cars-page">
+
+    <!-- PAGE HEADER -->
+    <div class="manage-header">
+        <div class="page-title-box">
+            <h1>Car Rental Management</h1>
+            <p>Monitor, configure, and manage all rental vehicles in the EliteCar collection.</p>
+        </div>
+
+        <div>
+            <a href="/Admin/AddCar" class="btn-add-vehicle">
+                <i class="fa fa-plus-circle"></i> Add Rental Car
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-circle-check me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-triangle-exclamation me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- STATS COUNTER ROW -->
+    <div class="stats-summary-row">
+        <div class="car-stat-card">
+            <div class="stat-icon-wrapper total">
+                <i class="fa fa-car"></i>
+            </div>
+            <div class="stat-data-box">
+                <div class="stat-number">@(ViewBag.TotalCars ?? Model.Count())</div>
+                <div class="stat-label">Total Rental Cars</div>
+            </div>
+        </div>
+
+        <div class="car-stat-card">
+            <div class="stat-icon-wrapper available">
+                <i class="fa fa-circle-check"></i>
+            </div>
+            <div class="stat-data-box">
+                <div class="stat-number">@(ViewBag.AvailableCars ?? Model.Count(x => x.VehicleStatus == "Available" || (x.VehicleStatus == null && x.Available)))</div>
+                <div class="stat-label">Available Now</div>
+            </div>
+        </div>
+
+        <div class="car-stat-card">
+            <div class="stat-icon-wrapper booked">
+                <i class="fa fa-clock"></i>
+            </div>
+            <div class="stat-data-box">
+                <div class="stat-number">@(ViewBag.BookedCars ?? Model.Count(x => x.VehicleStatus == "Booked"))</div>
+                <div class="stat-label">Active Bookings</div>
+            </div>
+        </div>
+
+        <div class="car-stat-card">
+            <div class="stat-icon-wrapper maintenance">
+                <i class="fa fa-screwdriver-wrench"></i>
+            </div>
+            <div class="stat-data-box">
+                <div class="stat-number">@(ViewBag.MaintenanceCars ?? Model.Count(x => x.VehicleStatus == "Under Maintenance"))</div>
+                <div class="stat-label">Under Service</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTERS TOOLBAR -->
+    <div class="toolbar-card">
+        <div class="filter-pills-group">
+            <button class="filter-pill active" onclick="filterCars('status', 'All', this)">All</button>
+            <button class="filter-pill" onclick="filterCars('status', 'Available', this)">Available</button>
+            <button class="filter-pill" onclick="filterCars('status', 'Booked', this)">Booked</button>
+            <button class="filter-pill" onclick="filterCars('status', 'Under Maintenance', this)">Maintenance</button>
+            <button class="filter-pill" onclick="filterCars('transmission', 'Automatic', this)">Automatic</button>
+            <button class="filter-pill" onclick="filterCars('transmission', 'Manual', this)">Manual</button>
+            <button class="filter-pill" onclick="filterCars('fuel', 'Petrol', this)">Petrol</button>
+            <button class="filter-pill" onclick="filterCars('fuel', 'Diesel', this)">Diesel</button>
+            <button class="filter-pill" onclick="filterCars('fuel', 'EV', this)">EV / Hybrid</button>
+        </div>
+
+        <div class="search-input-box">
+            <i class="fa fa-search"></i>
+            <input type="text" id="carSearchInput" placeholder="Search by name, model, reg #..." onkeyup="searchRentalCars()" />
+        </div>
+    </div>
+
+    <!-- CARS GRID -->
+    <div class="cars-grid" id="carContainer">
+        @foreach (var item in Model)
+        {
+            var statusClass = (item.VehicleStatus ?? "Available").ToLower().Replace(" ", "");
+            if (statusClass == "undermaintenance") { statusClass = "maintenance"; }
+
+            <div class="admin-car-card car-grid-item"
+                 data-status="@(item.VehicleStatus ?? "Available")"
+                 data-transmission="@item.Transmission"
+                 data-fuel="@item.FuelType"
+                 data-type="@item.CarType"
+                 data-name="@item.CarName"
+                 data-model="@item.CarModel"
+                 data-reg="@item.RegistrationNumber">
+
+                <!-- Media Section -->
+                <div class="card-media">
+                    @if (item.CarImage != null && item.CarImage.Length > 0)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(item.CarImage)" alt="@item.CarName" />
+                    }
+                    else
+                    {
+                        <img src="https://via.placeholder.com/450x260?text=No+Vehicle+Image" alt="@item.CarName" />
+                    }
+
+                    <span class="status-badge-pill @statusClass">
+                        @if (item.VehicleStatus == "Available" || (item.VehicleStatus == null && item.Available))
+                        {
+                            <i class="fa fa-circle-check"></i> <span>Available</span>
+                        }
+                        else if (item.VehicleStatus == "Booked")
+                        {
+                            <i class="fa fa-car"></i> <span>Booked</span>
+                        }
+                        else if (item.VehicleStatus == "Under Maintenance")
+                        {
+                            <i class="fa fa-wrench"></i> <span>Maintenance</span>
+                        }
+                        else
+                        {
+                            <i class="fa fa-ban"></i> <span>Inactive</span>
+                        }
+                    </span>
+
+                    <span class="price-tag-pill">
+                        ₹@item.PricePerDay.ToString("N0") <small style="font-weight: normal; font-size: 11px;">/ day</small>
+                    </span>
+
+                    @if (!string.IsNullOrEmpty(item.CarType))
+                    {
+                        <span class="category-tag-pill">
+                            @item.CarType
+                        </span>
+                    }
+                </div>
+
+                <!-- Info Section -->
+                <div class="card-info-content">
+                    <div class="card-title-row">
+                        <h3>@item.CarName</h3>
+                        <p class="model-subtitle">@item.CarModel</p>
+                    </div>
+
+                    <!-- 6-Tile Specifications -->
+                    <div class="specs-tag-grid">
+                        <div class="spec-mini-tag">
+                            <span class="tag-label">Trans</span>
+                            <span class="tag-val">@(string.IsNullOrEmpty(item.Transmission) ? "Auto" : item.Transmission)</span>
+                        </div>
+                        <div class="spec-mini-tag">
+                            <span class="tag-label">Fuel</span>
+                            <span class="tag-val">@(string.IsNullOrEmpty(item.FuelType) ? "Petrol" : item.FuelType)</span>
+                        </div>
+                        <div class="spec-mini-tag">
+                            <span class="tag-label">Seats</span>
+                            <span class="tag-val">@(item.SeatingCapacity != null ? $"{item.SeatingCapacity} Seats" : "5 Seats")</span>
+                        </div>
+                        <div class="spec-mini-tag">
+                            <span class="tag-label">Year</span>
+                            <span class="tag-val">@(item.ManufacturingYear?.ToString() ?? "N/A")</span>
+                        </div>
+                        <div class="spec-mini-tag" title="@item.RegistrationNumber">
+                            <span class="tag-label">Reg. No</span>
+                            <span class="tag-val">@(string.IsNullOrEmpty(item.RegistrationNumber) ? "N/A" : item.RegistrationNumber)</span>
+                        </div>
+                        <div class="spec-mini-tag">
+                            <span class="tag-label">Type</span>
+                            <span class="tag-val">@(string.IsNullOrEmpty(item.CarType) ? "Sedan" : item.CarType)</span>
+                        </div>
+                    </div>
+
+                    <!-- Location Summary Box -->
+                    <div class="card-location-box">
+                        <strong>
+                            <i class="fa fa-location-dot"></i> @(string.IsNullOrEmpty(item.PickupLocation) ? "Main Hub" : item.PickupLocation)
+                        </strong>
+                        <p class="loc-text">
+                            @(string.IsNullOrEmpty(item.Address) ? "Default rental station hub" : item.Address)
+                            @if (!string.IsNullOrEmpty(item.Landmark))
+                            {
+                                <span class="text-muted">• Near @item.Landmark</span>
+                            }
+                        </p>
+                    </div>
+
+                    <!-- Actions Row -->
+                    <div class="card-actions-row">
+                        <a href="/Admin/EditCar?carId=@item.Id" class="btn-card-edit">
+                            <i class="fa fa-pen-to-square"></i> Edit Details
+                        </a>
+
+                        @if (item.Latitude != null && item.Longitude != null)
+                        {
+                            <a href="https://www.google.com/maps?q=@(item.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)),@(item.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="btn-card-map"
+                               title="View Pickup Map">
+                                <i class="fa fa-map-location-dot"></i>
+                            </a>
+                        }
+
+                        <a href="/Admin/DeleteCar/@item.Id"
+                           class="btn-card-delete"
+                           title="Delete Vehicle"
+                           onclick="return confirm('Are you sure you want to delete this vehicle from the car rental system? This action cannot be undone.');">
+                            <i class="fa fa-trash-can"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+
+</div>
+
+<script>
+    let activeFilterType = "all";
+    let activeFilterValue = "All";
+
+    function filterCars(type, value, btnElement) {
+        activeFilterType = type;
+        activeFilterValue = value;
+
+        document.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+        if (btnElement) {
+            btnElement.classList.add('active');
+        }
+
+        applyCarFilters();
+    }
+
+    function searchRentalCars() {
+        applyCarFilters();
+    }
+
+    function applyCarFilters() {
+        const query = (document.getElementById('carSearchInput')?.value || '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.car-grid-item');
+
+        cards.forEach(card => {
+            const status = card.getAttribute('data-status') || '';
+            const transmission = card.getAttribute('data-transmission') || '';
+            const fuel = card.getAttribute('data-fuel') || '';
+            const name = (card.getAttribute('data-name') || '').toLowerCase();
+            const model = (card.getAttribute('data-model') || '').toLowerCase();
+            const reg = (card.getAttribute('data-reg') || '').toLowerCase();
+            const carType = (card.getAttribute('data-type') || '').toLowerCase();
+
+            let matchesFilter = false;
+
+            if (activeFilterValue === "All") {
+                matchesFilter = true;
+            } else if (activeFilterType === "status") {
+                matchesFilter = status.toLowerCase() === activeFilterValue.toLowerCase();
+            } else if (activeFilterType === "transmission") {
+                matchesFilter = transmission.toLowerCase() === activeFilterValue.toLowerCase();
+            } else if (activeFilterType === "fuel") {
+                if (activeFilterValue === "EV") {
+                    matchesFilter = fuel.toLowerCase() === "ev" || fuel.toLowerCase() === "hybrid";
+                } else {
+                    matchesFilter = fuel.toLowerCase() === activeFilterValue.toLowerCase();
+                }
+            }
+
+            let matchesSearch = true;
+            if (query.length > 0) {
+                matchesSearch = name.includes(query) || model.includes(query) || reg.includes(query) || carType.includes(query);
+            }
+
+            card.style.display = (matchesFilter && matchesSearch) ? "flex" : "none";
+        });
+    }
+</script>

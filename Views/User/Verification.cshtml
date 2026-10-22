@@ -1,0 +1,271 @@
+@model CarRentalSystem.Models.UserVerification
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<link href="~/css/verification.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="verification-page">
+
+    <!-- HEADER -->
+    <div class="ver-user-header">
+        <h1>Customer Identity Verification</h1>
+        <p>Complete your one-time verification to unlock luxury car rental bookings and seamless contactless pickups.</p>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-circle-check me-2"></i>
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-triangle-exclamation me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model == null)
+    {
+        <!-- 3-STEP PROGRESS GUIDE -->
+        <div class="ver-steps-guide">
+            <div class="guide-step-item">
+                <div class="step-num"><i class="fa fa-id-card"></i></div>
+                <div class="step-info">
+                    <strong>1. Government Photo ID</strong>
+                    <small>Aadhaar, Passport, or National ID</small>
+                </div>
+            </div>
+
+            <div class="guide-step-item">
+                <div class="step-num"><i class="fa fa-address-card"></i></div>
+                <div class="step-info">
+                    <strong>2. Driving License</strong>
+                    <small>Clear front and back photos</small>
+                </div>
+            </div>
+
+            <div class="guide-step-item">
+                <div class="step-num"><i class="fa fa-signature"></i></div>
+                <div class="step-info">
+                    <strong>3. Digital Signature</strong>
+                    <small>Signature specimen for rental agreement</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- UPLOAD FORM -->
+        <div class="upload-form-card">
+            <form asp-action="Verification" method="post" enctype="multipart/form-data">
+
+                <div class="upload-grid-4">
+
+                    <!-- Government ID -->
+                    <label class="modern-upload-tile" for="govIdInput">
+                        <div class="tile-icon-box">
+                            <i class="fa fa-id-card"></i>
+                        </div>
+                        <div class="tile-title">Government Photo ID</div>
+                        <div class="tile-desc">Upload clear photo of Passport, National ID, or Aadhaar</div>
+                        <span class="btn-choose-file"><i class="fa fa-arrow-up-from-bracket"></i> Choose File</span>
+                        <input type="file" id="govIdInput" name="GovernmentId" accept="image/*" required onchange="previewDoc(event, 'govIdPreview')" />
+                        <div id="govIdPreview" class="preview-thumb-box mt-2">
+                            <img src="" class="img-fluid" />
+                        </div>
+                    </label>
+
+                    <!-- Digital Signature -->
+                    <label class="modern-upload-tile" for="sigInput">
+                        <div class="tile-icon-box">
+                            <i class="fa fa-signature"></i>
+                        </div>
+                        <div class="tile-title">Digital Signature</div>
+                        <div class="tile-desc">Upload photo or scan of your handwritten signature</div>
+                        <span class="btn-choose-file"><i class="fa fa-arrow-up-from-bracket"></i> Choose File</span>
+                        <input type="file" id="sigInput" name="DigitalSignature" accept="image/*" required onchange="previewDoc(event, 'sigPreview')" />
+                        <div id="sigPreview" class="preview-thumb-box mt-2">
+                            <img src="" class="img-fluid" />
+                        </div>
+                    </label>
+
+                    <!-- Driving License Front -->
+                    <label class="modern-upload-tile" for="licFrontInput">
+                        <div class="tile-icon-box">
+                            <i class="fa fa-address-card"></i>
+                        </div>
+                        <div class="tile-title">Driving License (Front)</div>
+                        <div class="tile-desc">Upload clear front side of your valid driving license</div>
+                        <span class="btn-choose-file"><i class="fa fa-arrow-up-from-bracket"></i> Choose File</span>
+                        <input type="file" id="licFrontInput" name="LicenseFront" accept="image/*" required onchange="previewDoc(event, 'licFrontPreview')" />
+                        <div id="licFrontPreview" class="preview-thumb-box mt-2">
+                            <img src="" class="img-fluid" />
+                        </div>
+                    </label>
+
+                    <!-- Driving License Back -->
+                    <label class="modern-upload-tile" for="licBackInput">
+                        <div class="tile-icon-box">
+                            <i class="fa fa-address-card"></i>
+                        </div>
+                        <div class="tile-title">Driving License (Back)</div>
+                        <div class="tile-desc">Upload clear rear side showing category & expiry dates</div>
+                        <span class="btn-choose-file"><i class="fa fa-arrow-up-from-bracket"></i> Choose File</span>
+                        <input type="file" id="licBackInput" name="LicenseBack" accept="image/*" required onchange="previewDoc(event, 'licBackPreview')" />
+                        <div id="licBackPreview" class="preview-thumb-box mt-2">
+                            <img src="" class="img-fluid" />
+                        </div>
+                    </label>
+
+                </div>
+
+                <button type="submit" class="btn-submit-verification">
+                    <i class="fa fa-shield-check"></i> Submit Verification Documents
+                </button>
+            </form>
+        </div>
+    }
+    else
+    {
+        var status = (Model.Status ?? "Pending").ToLower();
+
+        <!-- STATUS BANNER CARD -->
+        <div class="ver-status-banner-card">
+            <div class="status-left-meta">
+                <div class="status-symbol-wrapper @status">
+                    @if (status == "approved")
+                    {
+                        <i class="fa fa-check-circle"></i>
+                    }
+                    else if (status == "rejected")
+                    {
+                        <i class="fa fa-circle-xmark"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-clock"></i>
+                    }
+                </div>
+
+                <div class="status-text-info">
+                    @if (status == "approved")
+                    {
+                        <h2>Identity Verified & Approved</h2>
+                        <p>Your profile is fully verified! You can now book any premium vehicle in our car collection instantly.</p>
+                    }
+                    else if (status == "rejected")
+                    {
+                        <h2>Verification Review Needed</h2>
+                        <p>Your previous document submission requires updates. Please check remarks below and re-submit.</p>
+                    }
+                    else
+                    {
+                        <h2>Documents Under Review</h2>
+                        <p>Our compliance team is currently reviewing your documents. Typical review time is 15-30 minutes.</p>
+                    }
+                </div>
+            </div>
+
+            <div>
+                <span class="submission-pill-badge @status">
+                    @Model.Status
+                </span>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Remarks))
+        {
+            <div class="alert alert-warning rounded-4 shadow-sm mb-4">
+                <strong class="d-block mb-1"><i class="fa fa-comment-dots me-1"></i> Admin Remarks:</strong>
+                <span>@Model.Remarks</span>
+            </div>
+        }
+
+        <!-- UPLOADED DOCUMENTS PREVIEW -->
+        <div class="user-docs-grid">
+            <div class="user-doc-card">
+                <div class="doc-img-box">
+                    @if (Model.GovernmentId != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.GovernmentId)" alt="Government ID" />
+                    }
+                </div>
+                <div class="doc-title-bar">
+                    <i class="fa fa-id-card text-primary me-1"></i> Government ID
+                </div>
+            </div>
+
+            <div class="user-doc-card">
+                <div class="doc-img-box">
+                    @if (Model.DigitalSignature != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.DigitalSignature)" alt="Signature" />
+                    }
+                </div>
+                <div class="doc-title-bar">
+                    <i class="fa fa-signature text-primary me-1"></i> Digital Signature
+                </div>
+            </div>
+
+            <div class="user-doc-card">
+                <div class="doc-img-box">
+                    @if (Model.LicenseFront != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.LicenseFront)" alt="License Front" />
+                    }
+                </div>
+                <div class="doc-title-bar">
+                    <i class="fa fa-address-card text-primary me-1"></i> License Front
+                </div>
+            </div>
+
+            <div class="user-doc-card">
+                <div class="doc-img-box">
+                    @if (Model.LicenseBack != null)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.LicenseBack)" alt="License Back" />
+                    }
+                </div>
+                <div class="doc-title-bar">
+                    <i class="fa fa-address-card text-primary me-1"></i> License Back
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Status != "Approved")
+        {
+            <div class="ver-actions-bar">
+                <a href="/User/EditVerification" class="btn-edit-ver">
+                    <i class="fa fa-pen-to-square"></i> Update Documents
+                </a>
+
+                <a href="/User/DeleteVerification" class="btn-del-ver" onclick="return confirm('Are you sure you want to delete and reset your verification documents?');">
+                    <i class="fa fa-trash-can"></i> Delete & Start Over
+                </a>
+            </div>
+        }
+    }
+
+</div>
+
+<script>
+    function previewDoc(event, previewId) {
+        const input = event.target;
+        if (input.files && input.files[0]) {
+            const previewBox = document.getElementById(previewId);
+            if (previewBox) {
+                const img = previewBox.querySelector('img');
+                if (img) {
+                    img.src = URL.createObjectURL(input.files[0]);
+                    previewBox.style.display = 'block';
+                }
+            }
+        }
+    }
+</script>

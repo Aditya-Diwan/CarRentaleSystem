@@ -1,0 +1,517 @@
+/* =========================================================
+   ELITECAR USER CAR RENTAL & HOME STYLESHEET
+   ========================================================= */
+
+.user-cars-page {
+    padding: 10px 15px 40px;
+}
+
+/* =========================================================
+   GREETING & COMMAND HEADER
+   ========================================================= */
+
+.user-header-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+}
+
+.user-page-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    border: 1px solid #bfdbfe;
+}
+
+.user-header-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+
+.user-header-subtitle {
+    color: #64748b;
+    font-size: 15px;
+    margin: 0;
+}
+
+.driver-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 13.5px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.driver-status-badge.verified {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.driver-status-badge.pending {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.driver-status-badge.pending:hover {
+    background: #fde68a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(180, 83, 9, 0.2);
+}
+
+.user-metric-chips {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.user-metric-chip {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.user-metric-chip:hover {
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
+
+/* =========================================================
+   CAR RENTAL SEARCH & FILTER BAR
+   ========================================================= */
+
+.car-control-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 26px;
+    margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+.search-field-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-field-wrapper label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.car-date-input,
+.car-search-input {
+    height: 48px;
+    border-radius: 12px;
+    border: 1.5px solid #d1d5db;
+    padding: 10px 16px;
+    font-size: 14.5px;
+    font-weight: 500;
+    background: #f8fafc;
+    color: #0f172a;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.car-date-input:focus,
+.car-search-input:focus {
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    outline: none;
+}
+
+.btn-car-search {
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn-car-search:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+    color: #ffffff;
+}
+
+.btn-car-reset {
+    height: 48px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn-car-reset:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Filter Pills Strip */
+.filter-pills-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding-top: 18px;
+    margin-top: 18px;
+    border-top: 1px solid #f1f5f9;
+    scrollbar-width: none;
+}
+
+.filter-pills-row::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-chip-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13.5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.filter-chip-btn:hover {
+    background: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
+
+.filter-chip-btn.active {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+/* =========================================================
+   LUXURY VEHICLE CARDS
+   ========================================================= */
+
+.user-car-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-car-card:hover {
+    transform: translateY(-6px);
+    border-color: #bfdbfe;
+    box-shadow: 0 16px 35px rgba(37, 99, 235, 0.10);
+}
+
+.user-car-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+.user-car-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+}
+
+.user-car-card:hover .user-car-img-wrapper img {
+    transform: scale(1.05);
+}
+
+.card-status-pill-top {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+    backdrop-filter: blur(8px);
+    z-index: 2;
+}
+
+.card-status-pill-top.available {
+    background: rgba(220, 252, 231, 0.95);
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.card-status-pill-top.booked {
+    background: rgba(219, 234, 254, 0.95);
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
+}
+
+.card-status-pill-top.maintenance {
+    background: rgba(254, 243, 199, 0.95);
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.card-status-pill-top.inactive {
+    background: rgba(254, 226, 226, 0.95);
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.img-overlay-spec {
+    position: absolute;
+    bottom: 12px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: rgba(15, 23, 42, 0.75);
+    color: #ffffff;
+    backdrop-filter: blur(6px);
+    z-index: 2;
+}
+
+.img-overlay-spec.left { left: 12px; }
+.img-overlay-spec.right { right: 12px; }
+
+/* Card Content */
+.user-car-content {
+    padding: 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.user-car-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.3px;
+}
+
+.user-car-model {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+.car-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 18px;
+}
+
+.spec-chip {
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 8px 4px;
+}
+
+.spec-chip i {
+    font-size: 14px;
+    color: #2563eb;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.spec-chip span {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.car-hub-tag {
+    font-size: 12.5px;
+    color: #64748b;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Card Footer */
+.user-car-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.user-car-price {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.user-car-price small {
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.btn-card-reserve {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff !important;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-card-reserve:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+.btn-card-details-secondary {
+    background: #eff6ff;
+    color: #2563eb !important;
+    border: 1px solid #bfdbfe;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-card-details-secondary:hover {
+    background: #2563eb;
+    color: #ffffff !important;
+}
+
+/* =========================================================
+   SERVICE ASSURANCE STRIP
+   ========================================================= */
+
+.user-assurance-strip {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    padding: 24px;
+    margin-top: 40px;
+}
+
+.assurance-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px;
+}
+
+.assurance-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.assurance-text h6 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 2px 0;
+}
+
+.assurance-text p {
+    font-size: 12.5px;
+    color: #64748b;
+    margin: 0;
+}

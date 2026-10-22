@@ -1,0 +1,645 @@
+@model CarRentalSystem.Models.User
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<link href="~/css/userprofile.css"
+      rel="stylesheet"
+      asp-append-version="true" />
+
+<div class="profile-page">
+
+    <!-- ==========================
+            PAGE HEADER
+    =========================== -->
+
+    <div class="page-header">
+
+        <div>
+
+            <span class="page-tag">
+
+                Account Settings
+
+            </span>
+
+            <h1 class="page-title">
+
+                My Profile
+
+            </h1>
+
+            <p class="page-subtitle">
+
+                Manage your personal information and account settings.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="fa fa-check-circle me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="fa fa-exclamation-triangle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form id="profileForm"
+          asp-action="Profile"
+          method="post"
+          enctype="multipart/form-data">
+
+        <input asp-for="Id" hidden />
+
+        <!-- ==========================
+            PROFILE CARD
+        =========================== -->
+
+        <div class="profile-card">
+
+            <!-- LEFT SIDE -->
+
+            <div class="profile-left">
+
+                <div class="profile-image-box">
+
+                    @if (Model.ProfileImage != null)
+                    {
+                        <img id="profileImagePreview"
+                             src="data:image/jpeg;base64,@Convert.ToBase64String(Model.ProfileImage)"
+                             class="profile-image" />
+                    }
+                    else
+                    {
+                        <img id="profileImagePreview"
+                             src="~/images/default-user.png"
+                             class="profile-image" />
+                    }
+
+                </div>
+
+                <label class="upload-btn" for="profilePhotoInput">
+
+                    <i class="fa fa-camera"></i>
+
+                    Change Photo
+
+                    <input type="file"
+                           id="profilePhotoInput"
+                           name="ProfilePhoto"
+                           accept="image/*"
+                           onchange="previewProfilePhoto(event)"
+                           hidden />
+
+                </label>
+
+                <!-- LIVE PHOTO CONFIRMATION BOX -->
+                <div id="photoConfirmBox" class="photo-confirm-box" style="display:none;">
+                    <div class="photo-confirm-badge mb-2">
+                        <i class="fa fa-check-circle text-success"></i> New photo selected!
+                    </div>
+                    <p class="small text-muted mb-2">Confirm below to save this picture as your profile photo.</p>
+                    <div class="d-flex flex-column gap-2">
+                        <button type="submit" class="btn btn-sm btn-success confirm-photo-btn">
+                            <i class="fa fa-check"></i> Confirm & Save Photo
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary cancel-photo-btn" onclick="cancelProfilePhoto()">
+                            <i class="fa fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <div class="account-info">
+
+                    <h4>
+
+                        Account Information
+
+                    </h4>
+
+                    <div class="info-item">
+
+                        <span>Role</span>
+
+                        <strong>
+
+                            @Model.Role
+
+                        </strong>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span>Status</span>
+
+                        @if (Model.IsVerified)
+                        {
+                            <span class="badge verified">
+
+                                Verified
+
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge pending">
+
+                                Pending
+
+                            </span>
+                        }
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span>Account</span>
+
+                        <span class="badge active">
+
+                            Active
+
+                        </span>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span>Member Since</span>
+
+                        <strong>
+
+                            @if (Model.CreatedAt.HasValue)
+                            {
+                                @Model.CreatedAt.Value.ToString("dd MMM yyyy")
+                            }
+                            else
+                            {
+                                <span>N/A</span>
+                            }
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+
+            <div class="profile-right">
+
+                <h3>
+
+                    Personal Information
+
+                </h3>
+
+                <div class="profile-grid">
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Full Name
+
+                        </label>
+
+                        <input asp-for="FullName"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Email Address
+
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control"
+                               readonly />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Phone Number
+
+                        </label>
+
+                        <input asp-for="PhoneNumber"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Date of Birth
+
+                        </label>
+
+                        <input asp-for="DateOfBirth"
+                               type="date"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+                <div class="form-group mt-3">
+
+                    <label>
+
+                        Address
+
+                    </label>
+
+                    <textarea asp-for="Address"
+                              class="form-control"
+                              rows="3"></textarea>
+
+                </div>
+
+                <div class="profile-grid mt-3">
+
+                    <div class="form-group">
+
+                        <label>
+
+                            City
+
+                        </label>
+
+                        <input asp-for="City"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            State
+
+                        </label>
+
+                        <input asp-for="State"
+                               class="form-control" />
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>
+
+                            Pincode
+
+                        </label>
+
+                        <input asp-for="Pincode"
+                               class="form-control" />
+
+                    </div>
+
+                </div>
+
+                <div class="form-group mt-3">
+
+                    <label>
+
+                        Driving License Number
+
+                    </label>
+
+                    <input asp-for="DrivingLicenseNumber"
+                           class="form-control" />
+
+                </div>
+
+                <div class="save-section">
+
+                    <button type="submit"
+                            class="save-btn">
+
+                        <i class="fa fa-save"></i>
+
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>  
+
+    </form>
+
+    <!-- ==========================
+        BOOKING SUMMARY (AFTER PERSONAL INFO)
+    =========================== -->
+
+    <div class="profile-card mt-4 summary-card-wrapper">
+
+        <div class="card-header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h3>
+                        <i class="fa fa-chart-column text-primary"></i>
+                        Booking Summary
+                    </h3>
+                    <p>
+                        Overview of your EliteCar rentals, spending and verification status.
+                    </p>
+                </div>
+                <span class="badge bg-light text-primary border px-3 py-2 rounded-pill">
+                    <i class="fa fa-shield-halved me-1"></i> Account Activity
+                </span>
+            </div>
+        </div>
+
+        <div class="summary-grid">
+
+            <div class="summary-box">
+                <i class="fa fa-calendar-check"></i>
+                <h2>
+                    @ViewBag.TotalBookings
+                </h2>
+                <span>
+                    Total Bookings
+                </span>
+            </div>
+
+            <div class="summary-box">
+                <i class="fa fa-car"></i>
+                <h2>
+                    @ViewBag.ActiveBookings
+                </h2>
+                <span>
+                    Active Bookings
+                </span>
+            </div>
+
+            <div class="summary-box">
+                <i class="fa fa-wallet"></i>
+                <h2>
+                    ₹@ViewBag.TotalSpent
+                </h2>
+                <span>
+                    Total Spent
+                </span>
+            </div>
+
+            <div class="summary-box">
+                <i class="fa fa-circle-check"></i>
+                <h2>
+                    @(Model.IsVerified ? "Verified" : "Pending")
+                </h2>
+                <span>
+                    Verification
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ==========================
+        CHANGE PASSWORD
+    =========================== -->
+
+    <form asp-action="ChangePassword"
+          asp-controller="User"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div class="profile-card mt-4">
+
+            <div class="card-header pb-2 mb-3">
+                <h3 class="mb-0">
+                    <i class="fa fa-key text-primary me-2"></i>Change Password
+                </h3>
+            </div>
+
+            <div class="password-row-grid">
+
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password"
+                               id="currentPassword"
+                               name="currentPassword"
+                               class="form-control"
+                               placeholder="Enter current password"
+                               required />
+                        <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('currentPassword', this)" tabindex="-1" title="Toggle visibility">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>New Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password"
+                               id="newPassword"
+                               name="newPassword"
+                               class="form-control"
+                               placeholder="Enter new password"
+                               minlength="6"
+                               required />
+                        <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('newPassword', this)" tabindex="-1" title="Toggle visibility">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password"
+                               id="confirmPassword"
+                               name="confirmPassword"
+                               class="form-control"
+                               placeholder="Confirm new password"
+                               minlength="6"
+                               required />
+                        <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('confirmPassword', this)" tabindex="-1" title="Toggle visibility">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="save-section mt-3">
+                <button type="submit" class="save-btn">
+                    <i class="fa fa-key"></i>
+                    Change Password
+                </button>
+            </div>
+
+        </div>
+
+    </form>
+
+    <!-- ===========================
+            DANGER ZONE (REDESIGNED UI)
+    =========================== -->
+
+    <div class="modern-danger-zone mt-4">
+
+        <div class="danger-card-header d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="danger-icon-circle">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h3 class="danger-title mb-0">Danger Zone</h3>
+                    <span class="danger-subtitle">Permanent & Irreversible Account Action</span>
+                </div>
+            </div>
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill fw-semibold">
+                <i class="fa-solid fa-triangle-exclamation me-1"></i> Critical Action
+            </span>
+        </div>
+
+        <div class="danger-content-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
+            <div class="danger-left">
+                <p class="danger-text mb-3">
+                    Deleting your account is <strong>permanent</strong>. All your personal data, documents, and booking records will be permanently removed.
+                </p>
+
+                <div class="danger-checklist-grid">
+                    <div class="danger-check-item">
+                        <i class="fa-solid fa-circle-xmark text-danger me-2"></i>
+                        <span>Your user profile and personal credentials will be permanently erased.</span>
+                    </div>
+
+                    <div class="danger-check-item">
+                        <i class="fa-solid fa-circle-xmark text-danger me-2"></i>
+                        <span>All booking history and downloaded receipts will be discarded.</span>
+                    </div>
+
+                    <div class="danger-check-item">
+                        <i class="fa-solid fa-circle-xmark text-danger me-2"></i>
+                        <span>All uploaded identity proofs and driver license records will be removed.</span>
+                    </div>
+
+                    <div class="danger-check-item">
+                        <i class="fa-solid fa-circle-xmark text-danger me-2"></i>
+                        <span>You will be logged out immediately and your account cannot be recovered.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="danger-action-container align-self-start align-self-lg-center">
+                <form asp-controller="User"
+                      asp-action="DeleteAccount"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="modern-delete-btn"
+                            onclick="return confirm('⚠️ FINAL CONFIRMATION: Are you sure you want to permanently delete your account? This action cannot be reversed.');">
+
+                        <i class="fa-solid fa-trash-can"></i>
+                        Delete My Account
+
+                    </button>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let originalProfilePhotoSrc = "";
+
+document.addEventListener("DOMContentLoaded", function () {
+    const preview = document.getElementById("profileImagePreview");
+    if (preview) {
+        originalProfilePhotoSrc = preview.src;
+    }
+});
+
+function previewProfilePhoto(event) {
+    const input = event.target;
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const preview = document.getElementById("profileImagePreview");
+        const confirmBox = document.getElementById("photoConfirmBox");
+
+        if (preview) {
+            preview.src = URL.createObjectURL(file);
+        }
+        if (confirmBox) {
+            confirmBox.style.display = "block";
+        }
+    }
+}
+
+function cancelProfilePhoto() {
+    const input = document.getElementById("profilePhotoInput");
+    const preview = document.getElementById("profileImagePreview");
+    const confirmBox = document.getElementById("photoConfirmBox");
+
+    if (input) {
+        input.value = "";
+    }
+    if (preview && originalProfilePhotoSrc) {
+        preview.src = originalProfilePhotoSrc;
+    }
+    if (confirmBox) {
+        confirmBox.style.display = "none";
+    }
+}
+
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const icon = btn.querySelector("i");
+    if (input.type === "password") {
+        input.type = "text";
+        if (icon) {
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        }
+    } else {
+        input.type = "password";
+        if (icon) {
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+}
+
+</script>

@@ -1,0 +1,583 @@
+/* =========================================================
+   ELITECAR ADMIN DASHBOARD STYLESHEET
+   ========================================================= */
+
+.dashboard-page {
+    padding: 10px 15px 40px;
+}
+
+/* =========================================================
+   EXECUTIVE HEADER
+   ========================================================= */
+
+.admin-header-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+}
+
+.admin-page-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    border: 1px solid #bfdbfe;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: #16a34a;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+    display: inline-block;
+}
+
+.admin-header-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+
+.admin-header-subtitle {
+    color: #64748b;
+    font-size: 15px;
+    margin: 0;
+}
+
+.btn-admin-action {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff !important;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14.5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-admin-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+}
+
+.btn-admin-secondary {
+    background: #ffffff;
+    color: #0f172a !important;
+    border: 1.5px solid #e2e8f0;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14.5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-admin-secondary:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #2563eb !important;
+}
+
+/* =========================================================
+   TOP KPI STAT CARDS
+   ========================================================= */
+
+.kpi-stat-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 26px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.04);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.kpi-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.kpi-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.kpi-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.kpi-icon-box.revenue { background: #eff6ff; color: #2563eb; }
+.kpi-icon-box.bookings { background: #ecfdf5; color: #10b981; }
+.kpi-icon-box.cars { background: #f0fdf4; color: #16a34a; }
+.kpi-icon-box.users { background: #fef3c7; color: #d97706; }
+
+.kpi-stat-pill {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.kpi-stat-pill.success { background: #dcfce7; color: #15803d; }
+.kpi-stat-pill.primary { background: #dbeafe; color: #1d4ed8; }
+.kpi-stat-pill.warning { background: #fef3c7; color: #b45309; }
+
+.kpi-card-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-card-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+}
+
+.kpi-card-meta {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* =========================================================
+   ATTENTION BANNER
+   ========================================================= */
+
+.admin-alert-banner {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1.5px solid #fde68a;
+    border-radius: 16px;
+    padding: 16px 24px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.alert-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.alert-banner-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #f59e0b;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.alert-banner-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #92400e;
+    margin: 0 0 2px 0;
+}
+
+.alert-banner-subtitle {
+    font-size: 13.5px;
+    color: #b45309;
+    margin: 0;
+}
+
+.btn-alert-review {
+    background: #d97706;
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 8px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-alert-review:hover {
+    background: #b45309;
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   DASHBOARD SECTION CARDS
+   ========================================================= */
+
+.dash-panel-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 6px 24px rgba(15, 23, 42, 0.04);
+    padding: 26px;
+    margin-bottom: 30px;
+}
+
+.dash-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dash-panel-header h3 {
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dash-panel-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+}
+
+.dash-panel-link:hover {
+    color: #1d4ed8;
+    transform: translateX(2px);
+}
+
+/* =========================================================
+   RECENT BOOKINGS TABLE / CARDS
+   ========================================================= */
+
+.dash-booking-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 14px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+}
+
+.dash-booking-item:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateX(4px);
+}
+
+.booking-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.booking-car-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.booking-info-block h5 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 3px 0;
+}
+
+.booking-info-block p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+}
+
+.booking-item-right {
+    text-align: right;
+}
+
+.booking-price-tag {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.status-badge-custom {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge-custom.confirmed,
+.status-badge-custom.active,
+.status-badge-custom.paid {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.status-badge-custom.completed {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #93c5fd;
+}
+
+.status-badge-custom.pending {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.status-badge-custom.cancelled {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+}
+
+/* =========================================================
+   CAR RENTAL STATUS BARS
+   ========================================================= */
+
+.status-stat-row {
+    margin-bottom: 18px;
+}
+
+.status-stat-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #475569;
+}
+
+.status-progress-bar {
+    height: 10px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+
+.status-progress-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+.status-progress-fill.available { background: #16a34a; }
+.status-progress-fill.booked { background: #2563eb; }
+.status-progress-fill.maintenance { background: #f59e0b; }
+
+/* =========================================================
+   PENDING VERIFICATION MINI LIST
+   ========================================================= */
+
+.ver-mini-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.ver-mini-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ver-mini-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #eff6ff;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.ver-mini-user h6 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.ver-mini-user span {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.btn-mini-review {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-mini-review:hover {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+/* =========================================================
+   STRIPE GATEWAY CARD
+   ========================================================= */
+
+.stripe-gateway-card {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    border-radius: 20px;
+    padding: 24px;
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(49, 46, 129, 0.25);
+    margin-bottom: 30px;
+}
+
+.stripe-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.stripe-brand-logo {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+.stripe-status-pill {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stripe-card-body h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.stripe-card-body p {
+    font-size: 13.5px;
+    color: #c7d2fe;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   QUICK SHORTCUTS GRID
+   ========================================================= */
+
+.quick-shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.shortcut-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px 12px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 14px;
+    text-decoration: none;
+    color: #334155;
+    transition: all 0.2s ease;
+}
+
+.shortcut-tile:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.shortcut-tile i {
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: #2563eb;
+}
+
+.shortcut-tile span {
+    font-size: 13px;
+    font-weight: 700;
+}

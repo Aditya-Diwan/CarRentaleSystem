@@ -1,0 +1,409 @@
+@model CarRentalSystem.Models.Car
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<link href="~/css/cardetails.css" rel="stylesheet" asp-append-version="true" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="car-details-page">
+
+    <!-- Top Navigation Bar -->
+    <div class="details-top-nav">
+        <a href="/User/Index" class="btn-back-cars">
+            <i class="fa fa-arrow-left"></i> Back to Rental Cars
+        </a>
+        <div class="header-badges">
+            @if (Model.VehicleStatus == "Available")
+            {
+                <span class="status-pill available">
+                    <i class="fa fa-circle-check"></i> Available
+                </span>
+            }
+            else if (Model.VehicleStatus == "Booked")
+            {
+                <span class="status-pill booked">
+                    <i class="fa fa-clock"></i> Booked
+                </span>
+            }
+            else if (Model.VehicleStatus == "Under Maintenance")
+            {
+                <span class="status-pill maintenance">
+                    <i class="fa fa-screwdriver-wrench"></i> Under Maintenance
+                </span>
+            }
+            else
+            {
+                <span class="status-pill inactive">
+                    <i class="fa fa-ban"></i> Inactive
+                </span>
+            }
+        </div>
+    </div>
+
+    <!-- Header Card -->
+    <div class="details-header-card">
+        <div class="header-main-info">
+            <span class="badge-category">
+                <i class="fa fa-gem"></i> @(string.IsNullOrEmpty(Model.CarType) ? "Premium Car" : Model.CarType)
+            </span>
+            <h1>@Model.CarName</h1>
+            <p class="car-subtext">
+                @Model.CarModel @(Model.ManufacturingYear != null ? $"• {Model.ManufacturingYear}" : "") @(!string.IsNullOrEmpty(Model.RegistrationNumber) ? $"• {Model.RegistrationNumber}" : "")
+            </p>
+        </div>
+        <div class="header-status-badge">
+            @if (Model.VehicleStatus == "Available")
+            {
+                <span class="status-pill available">
+                    <i class="fa fa-circle-check"></i> Ready for Immediate Booking
+                </span>
+            }
+            else if (Model.VehicleStatus == "Booked")
+            {
+                <span class="status-pill booked">
+                    <i class="fa fa-car"></i> Currently On Rent
+                </span>
+            }
+            else if (Model.VehicleStatus == "Under Maintenance")
+            {
+                <span class="status-pill maintenance">
+                    <i class="fa fa-wrench"></i> Under Service
+                </span>
+            }
+            else
+            {
+                <span class="status-pill inactive">
+                    <i class="fa fa-ban"></i> Not Available
+                </span>
+            }
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show mb-4 rounded-4 shadow-sm" role="alert">
+            <i class="fa fa-triangle-exclamation me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Main Content Grid -->
+    <div class="row g-4">
+
+        <!-- LEFT COLUMN: Showcase & Specs & Amenities -->
+        <div class="col-lg-7">
+
+            <!-- Showcase Image Card -->
+            <div class="details-card">
+                <div class="image-showcase-box">
+                    @if (Model.CarImage != null && Model.CarImage.Length > 0)
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.CarImage)"
+                             alt="@Model.CarName"
+                             class="car-hero-img" />
+                    }
+                    else
+                    {
+                        <img src="https://via.placeholder.com/800x500?text=No+Vehicle+Image"
+                             alt="@Model.CarName"
+                             class="car-hero-img" />
+                    }
+
+                    <div class="image-overlay-badges">
+                        @if (!string.IsNullOrEmpty(Model.Transmission))
+                        {
+                            <span class="overlay-pill">
+                                <i class="fa fa-gear"></i> @Model.Transmission
+                            </span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.FuelType))
+                        {
+                            <span class="overlay-pill">
+                                <i class="fa fa-gas-pump"></i> @Model.FuelType
+                            </span>
+                        }
+                        @if (Model.SeatingCapacity != null)
+                        {
+                            <span class="overlay-pill">
+                                <i class="fa fa-users"></i> @Model.SeatingCapacity Seats
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vehicle Specifications Card -->
+            <div class="details-card">
+                <div class="details-card-header">
+                    <h3>
+                        <i class="fa fa-sliders"></i> Key Specifications
+                    </h3>
+                </div>
+
+                <div class="specs-modern-grid">
+                    <div class="spec-tile">
+                        <div class="spec-icon-box">
+                            <i class="fa fa-gas-pump"></i>
+                        </div>
+                        <span class="spec-label">Fuel Type</span>
+                        <span class="spec-value">@(string.IsNullOrEmpty(Model.FuelType) ? "Petrol / Diesel" : Model.FuelType)</span>
+                    </div>
+
+                    <div class="spec-tile">
+                        <div class="spec-icon-box">
+                            <i class="fa fa-cogs"></i>
+                        </div>
+                        <span class="spec-label">Transmission</span>
+                        <span class="spec-value">@(string.IsNullOrEmpty(Model.Transmission) ? "Automatic" : Model.Transmission)</span>
+                    </div>
+
+                    <div class="spec-tile">
+                        <div class="spec-icon-box">
+                            <i class="fa fa-car-side"></i>
+                        </div>
+                        <span class="spec-label">Vehicle Type</span>
+                        <span class="spec-value">@(string.IsNullOrEmpty(Model.CarType) ? "Sedan / SUV" : Model.CarType)</span>
+                    </div>
+
+                    <div class="spec-tile">
+                        <div class="spec-icon-box">
+                            <i class="fa fa-calendar-days"></i>
+                        </div>
+                        <span class="spec-label">Model Year</span>
+                        <span class="spec-value">@(Model.ManufacturingYear?.ToString() ?? "Recent")</span>
+                    </div>
+
+                    <div class="spec-tile">
+                        <div class="spec-icon-box">
+                            <i class="fa fa-users"></i>
+                        </div>
+                        <span class="spec-label">Capacity</span>
+                        <span class="spec-value">@(Model.SeatingCapacity != null ? $"{Model.SeatingCapacity} Persons" : "5 Persons")</span>
+                    </div>
+
+                    <div class="spec-tile">
+                        <div class="spec-icon-box">
+                            <i class="fa fa-id-card"></i>
+                        </div>
+                        <span class="spec-label">Registration</span>
+                        <span class="spec-value">@(string.IsNullOrEmpty(Model.RegistrationNumber) ? "Verified Vehicle" : Model.RegistrationNumber)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Included With Every Booking -->
+            <div class="details-card">
+                <div class="details-card-header">
+                    <h3>
+                        <i class="fa fa-shield-halved"></i> Premium Inclusions
+                    </h3>
+                </div>
+
+                <div class="inclusions-grid">
+                    <div class="inclusion-pill">
+                        <i class="fa fa-circle-check"></i> Comprehensive Insurance
+                    </div>
+                    <div class="inclusion-pill">
+                        <i class="fa fa-circle-check"></i> 24x7 Roadside Assistance
+                    </div>
+                    <div class="inclusion-pill">
+                        <i class="fa fa-circle-check"></i> Thoroughly Sanitized
+                    </div>
+                    <div class="inclusion-pill">
+                        <i class="fa fa-circle-check"></i> Free Cancellation (24h)
+                    </div>
+                    <div class="inclusion-pill">
+                        <i class="fa fa-circle-check"></i> GPS & Safety Verified
+                    </div>
+                    <div class="inclusion-pill">
+                        <i class="fa fa-circle-check"></i> Instant Booking Confirmation
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Pricing & Booking CTA + Pickup & Map -->
+        <div class="col-lg-5">
+            <div class="sticky-sidebar">
+
+                <!-- Booking CTA Card -->
+                <div class="booking-cta-card">
+                    <div class="price-display-box">
+                        <div class="price-label">Daily Rental Rate</div>
+                        <div class="price-amount">
+                            ₹@Model.PricePerDay.ToString("N0") <small>/ day</small>
+                        </div>
+                    </div>
+
+                    <ul class="rental-perks">
+                        <li><i class="fa fa-check-circle"></i> Zero hidden booking charges</li>
+                        <li><i class="fa fa-check-circle"></i> Standard damage protection included</li>
+                        <li><i class="fa fa-check-circle"></i> Clean, fueled & ready on arrival</li>
+                    </ul>
+
+                    @if (Model.VehicleStatus == "Available")
+                    {
+                        @if (ViewBag.IsVerified == true)
+                        {
+                            <a href="/User/BookCar" class="btn-book-primary">
+                                <i class="fa fa-calendar-check"></i> Book This Car Now
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/User/Verification" class="btn-verify-primary">
+                                <i class="fa fa-id-card"></i> Complete Verification to Book
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary w-100 py-3 rounded-4 fw-bold" disabled>
+                            <i class="fa fa-ban me-2"></i> Vehicle @(Model.VehicleStatus ?? "Unavailable")
+                        </button>
+                    }
+
+                    <div class="cta-guarantee-note">
+                        <i class="fa fa-shield-check"></i> Verified EliteCar Safe Booking Guarantee
+                    </div>
+                </div>
+
+                <!-- Pickup Location & Map Section -->
+                @if (ViewBag.HasBookedThisCar == true)
+                {
+                    <div class="details-card">
+                        <div class="details-card-header">
+                            <h3>
+                                <i class="fa fa-location-dot"></i> Pickup & Return Hub
+                            </h3>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill small">
+                                <i class="fa fa-circle-check"></i> Booked Vehicle
+                            </span>
+                        </div>
+
+                        <div class="location-summary-box">
+                            <h5>
+                                <i class="fa fa-building text-primary"></i>
+                                @(string.IsNullOrEmpty(Model.PickupLocation) ? "Vehicle Pickup Point" : Model.PickupLocation)
+                            </h5>
+
+                            @if (!string.IsNullOrEmpty(Model.Address))
+                            {
+                                <p>@Model.Address</p>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.Landmark))
+                            {
+                                <div class="landmark-pill">
+                                    <i class="fa fa-map-pin"></i> Near @Model.Landmark
+                                </div>
+                            }
+                        </div>
+
+                        @if (Model.Latitude != null && Model.Longitude != null)
+                        {
+                            <div id="pickupMap" class="map-viewport"></div>
+
+                            <div class="map-action-buttons">
+                                <a href="https://www.google.com/maps?q=@(Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)),@(Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn-map-action">
+                                    <i class="fa fa-map"></i> Google Maps
+                                </a>
+
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=@(Model.Latitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)),@(Model.Longitude.Value.ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn-map-action">
+                                    <i class="fa fa-location-arrow"></i> Directions
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <!-- Hidden Map / Protected Pickup Hub Card -->
+                    <div class="details-card">
+                        <div class="details-card-header">
+                            <h3>
+                                <i class="fa fa-shield-halved"></i> Pickup Station Info
+                            </h3>
+                            <span class="badge bg-light text-muted border px-2 py-1 rounded-pill small">
+                                <i class="fa fa-lock"></i> Map Hidden
+                            </span>
+                        </div>
+
+                        <div class="location-summary-box text-center py-3">
+                            <div style="width: 54px; height: 54px; margin: 0 auto 12px; background: #eff6ff; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #2563eb; font-size: 22px;">
+                                <i class="fa fa-location-dot"></i>
+                            </div>
+
+                            <h5 style="justify-content: center; font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">
+                                @(string.IsNullOrEmpty(Model.PickupLocation) ? "EliteCar Pickup Hub" : Model.PickupLocation)
+                            </h5>
+
+                            <p style="color: #64748b; font-size: 13px; max-width: 320px; margin: 0 auto 14px; line-height: 1.5;">
+                                The exact address, live interactive map, and navigation directions will be unlocked immediately after you book this car.
+                            </p>
+
+                            <div class="landmark-pill" style="display: inline-flex;">
+                                <i class="fa fa-shield-check text-success"></i> Safe Contactless Pickup Available
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@if (ViewBag.HasBookedThisCar == true && Model.Latitude != null && Model.Longitude != null)
+{
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var mapElement = document.getElementById("pickupMap");
+            if (!mapElement) return;
+
+            var lat = parseFloat('@(Model.Latitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "0")');
+            var lng = parseFloat('@(Model.Longitude?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "0")');
+
+            if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) return;
+
+            var map = L.map("pickupMap", {
+                scrollWheelZoom: false
+            }).setView([lat, lng], 15);
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(map);
+
+            var popupTitle = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PickupLocation ?? Model.CarName ?? "Pickup Hub"));
+            var popupAddress = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Address ?? ""));
+
+            var popupContent = '<div style="font-family: inherit; font-size: 13px;">' +
+                               '<strong style="color: #0f172a; display:block; margin-bottom: 2px;">' + popupTitle + '</strong>' +
+                               (popupAddress ? '<span style="color: #64748b;">' + popupAddress + '</span>' : '') +
+                               '</div>';
+
+            L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup(popupContent)
+                .openPopup();
+
+            setTimeout(function () {
+                map.invalidateSize();
+            }, 300);
+        });
+    </script>
+}

@@ -1,0 +1,238 @@
+@model CarRentalSystem.Models.Booking
+
+@{
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<link href="~/css/receipt.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="receipt-page-container">
+
+    <!-- Action Bar (Hidden when printing/PDF) -->
+    <div class="receipt-action-bar">
+        <a href="/User/MyBookings" class="btn-back-bookings">
+            <i class="fa fa-arrow-left"></i> Back to My Bookings
+        </a>
+
+        <button type="button" class="btn-download-pdf" onclick="window.print()">
+            <i class="fa fa-download"></i> Print / Save as PDF
+        </button>
+    </div>
+
+    <!-- Official Printable Invoice Sheet -->
+    <div class="invoice-sheet" id="invoiceSheet">
+
+        <!-- Invoice Header Row -->
+        <div class="invoice-header-row">
+            <div class="brand-invoice">
+                <h2>
+                    <i class="fa fa-car"></i> EliteCar
+                </h2>
+                <p>Premium Car Rental & Mobility Services</p>
+                <p style="font-size: 11px; color: #94a3b8; margin-top: 2px;">GSTIN: 27AABCE1234F1Z5 • CIN: U50100MH2024PTC123456</p>
+            </div>
+
+            <div class="invoice-meta-box">
+                <h1>Tax Invoice</h1>
+                <div class="invoice-id">#INV-@DateTime.Now.Year-@Model.Id.ToString("D5")</div>
+                <div class="invoice-date">Date: @Model.BookingDate.ToString("dd MMMM yyyy")</div>
+                <div class="invoice-date">Booking Ref: #BK-@Model.Id</div>
+            </div>
+        </div>
+
+        <!-- Customer & Provider Parties Grid -->
+        <div class="parties-grid">
+            <div class="party-box">
+                <h4>Billed To (Customer)</h4>
+                <div class="party-name">@(Model.User?.FullName ?? "Valued Customer")</div>
+                <p><i class="fa fa-envelope text-muted me-1"></i> @(Model.User?.Email ?? "N/A")</p>
+                <p><i class="fa fa-phone text-muted me-1"></i> @(!string.IsNullOrEmpty(Model.User?.PhoneNumber) ? Model.User.PhoneNumber : "Registered on file")</p>
+                @if (!string.IsNullOrEmpty(Model.User?.DrivingLicenseNumber))
+                {
+                    <p><i class="fa fa-id-card text-muted me-1"></i> License: <strong>@Model.User.DrivingLicenseNumber</strong></p>
+                }
+                @if (!string.IsNullOrEmpty(Model.User?.City) || !string.IsNullOrEmpty(Model.User?.State))
+                {
+                    <p><i class="fa fa-map-pin text-muted me-1"></i> @Model.User?.City @(!string.IsNullOrEmpty(Model.User?.State) ? $", {Model.User.State}" : "")</p>
+                }
+            </div>
+
+            <div class="party-box">
+                <h4>Rental Station & Provider</h4>
+                <div class="party-name">EliteCar Rental Hub</div>
+                <p><i class="fa fa-location-dot text-muted me-1"></i> @(string.IsNullOrEmpty(Model.PickupLocation) ? (Model.Car?.PickupLocation ?? "Central Terminal") : Model.PickupLocation)</p>
+                @if (!string.IsNullOrEmpty(Model.Address) || !string.IsNullOrEmpty(Model.Car?.Address))
+                {
+                    <p>@(Model.Address ?? Model.Car?.Address)</p>
+                }
+                <p><i class="fa fa-headset text-muted me-1"></i> Support: support@elitecar.com</p>
+                <p><i class="fa fa-phone text-muted me-1"></i> Hotline: +91 1800-200-ELITE (24×7)</p>
+            </div>
+        </div>
+
+        <!-- Reservation & Vehicle Summary Strip -->
+        <div class="reservation-summary-strip">
+            <div class="strip-header">
+                <h3>
+                    <i class="fa fa-car-side"></i> @(Model.Car?.CarName ?? "Vehicle Reservation") @(Model.Car?.CarModel != null ? $"({Model.Car.CarModel})" : "")
+                </h3>
+                <span class="paid-badge-stamp">
+                    <i class="fa fa-check-circle"></i> Paid in Full
+                </span>
+            </div>
+
+            <div class="summary-details-grid">
+                <div class="summary-tile">
+                    <span>Category / Type</span>
+                    <strong>@(string.IsNullOrEmpty(Model.Car?.CarType) ? "Premium Car" : Model.Car.CarType)</strong>
+                </div>
+
+                <div class="summary-tile">
+                    <span>Registration No.</span>
+                    <strong>@(string.IsNullOrEmpty(Model.Car?.RegistrationNumber) ? "Verified Vehicle" : Model.Car.RegistrationNumber)</strong>
+                </div>
+
+                <div class="summary-tile">
+                    <span>Pickup Date</span>
+                    <strong>@Model.StartDate.ToString("dd MMM yyyy")</strong>
+                </div>
+
+                <div class="summary-tile">
+                    <span>Return Date</span>
+                    <strong>@Model.EndDate.ToString("dd MMM yyyy")</strong>
+                </div>
+
+                <div class="summary-tile">
+                    <span>Rental Duration</span>
+                    <strong>@Model.TotalDays Day(s)</strong>
+                </div>
+
+                <div class="summary-tile">
+                    <span>Transmission</span>
+                    <strong>@(Model.Car?.Transmission ?? "Automatic")</strong>
+                </div>
+
+                <div class="summary-tile">
+                    <span>Fuel Policy</span>
+                    <strong>@(Model.Car?.FuelType ?? "Petrol") (Full to Full)</strong>
+                </div>
+
+                <div class="summary-tile">
+                    <span>Payment Method</span>
+                    <strong>@(Model.PaymentMethod ?? "Online / Stripe Card")</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Itemized Financial Breakdown Table -->
+        <div class="invoice-table-wrapper">
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Description</th>
+                        <th class="text-end" style="width: 15%;">Daily Rate</th>
+                        <th class="text-end" style="width: 15%;">Duration</th>
+                        <th class="text-end" style="width: 20%;">Total (INR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong>Vehicle Rental Fee</strong>
+                            <div class="subtext">@(Model.Car?.CarName ?? "Vehicle") - @(Model.Car?.CarModel ?? "") (@Model.StartDate.ToString("dd MMM") to @Model.EndDate.ToString("dd MMM yyyy"))</div>
+                        </td>
+                        <td class="text-end">
+                            ₹@((Model.Car != null && Model.Car.PricePerDay > 0 ? Model.Car.PricePerDay : (Model.TotalDays > 0 ? Model.TotalAmount / Model.TotalDays : Model.TotalAmount)).ToString("N0"))
+                        </td>
+                        <td class="text-end">@Model.TotalDays day(s)</td>
+                        <td class="text-end"><strong>₹@Model.TotalAmount.ToString("N0")</strong></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Comprehensive Vehicle Coverage</strong>
+                            <div class="subtext">Standard collision damage protection & third-party liability</div>
+                        </td>
+                        <td class="text-end">₹0</td>
+                        <td class="text-end">Included</td>
+                        <td class="text-end" style="color: #16a34a; font-weight: 600;">Complimentary</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>24/7 Roadside Assistance & Breakdown Support</strong>
+                            <div class="subtext">Pan-India helpline, emergency towing, and on-site support</div>
+                        </td>
+                        <td class="text-end">₹0</td>
+                        <td class="text-end">Included</td>
+                        <td class="text-end" style="color: #16a34a; font-weight: 600;">Complimentary</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Deep Sanitization & Pre-Delivery Inspection</strong>
+                            <div class="subtext">Verified 40-point safety checklist & contactless preparation</div>
+                        </td>
+                        <td class="text-end">₹0</td>
+                        <td class="text-end">Included</td>
+                        <td class="text-end" style="color: #16a34a; font-weight: 600;">Complimentary</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals Summary -->
+        <div class="invoice-totals-box">
+            <div class="totals-table">
+                <div class="totals-row">
+                    <span>Subtotal:</span>
+                    <span>₹@Model.TotalAmount.ToString("N0")</span>
+                </div>
+                <div class="totals-row">
+                    <span>Taxes & Service Fees (Included):</span>
+                    <span>₹0</span>
+                </div>
+                <div class="totals-row">
+                    <span>Security Deposit (Refundable on return):</span>
+                    <span>₹0</span>
+                </div>
+                <div class="totals-row grand-total">
+                    <span>Total Amount Paid:</span>
+                    <span class="amount">₹@Model.TotalAmount.ToString("N0")</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terms & Official Signature Row -->
+        <div class="invoice-footer-row">
+            <div class="terms-note">
+                <strong>Rental Terms & Notes:</strong>
+                • Original driving license and government ID required upon vehicle pickup.<br />
+                • Vehicle must be returned with the same fuel level as recorded at dispatch.<br />
+                • Free cancellation up to 24 hours prior to rental start time.<br />
+                • For 24/7 assistance or booking adjustments, call 1800-200-ELITE.
+            </div>
+
+            <div class="official-signature-box">
+                <div class="signature-stamp-img">
+                    <i class="fa fa-shield-check"></i>
+                    ELITECAR OFFICIAL
+                    <span>DIGITALLY VERIFIED</span>
+                </div>
+                <div class="sign-name">Authorized Signatory</div>
+                <div class="sign-title">EliteCar Mobility Services</div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    // Automatically trigger print dialog if requested via ?print=true
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('print') === 'true') {
+            setTimeout(function () {
+                window.print();
+            }, 400);
+        }
+    });
+</script>

@@ -1,0 +1,414 @@
+/* ==========================================================================
+   ADMIN VERIFICATION CENTER STYLES - EliteCar System
+   ========================================================================== */
+
+.admin-verification-page {
+    padding: 10px 0 40px;
+}
+
+.verification-header-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.verification-header-box h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px;
+}
+
+.verification-header-box p {
+    color: #64748b;
+    margin: 0;
+    font-size: 15px;
+}
+
+/* Stats Counter Row */
+.ver-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.ver-stat-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 18px 20px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 15px rgba(15,23,42,0.03);
+    transition: all 0.2s ease;
+}
+
+.ver-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15,23,42,0.06);
+}
+
+.ver-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.ver-stat-icon.total { background: #eff6ff; color: #2563eb; }
+.ver-stat-icon.pending { background: #fef3c7; color: #d97706; }
+.ver-stat-icon.approved { background: #dcfce7; color: #16a34a; }
+.ver-stat-icon.rejected { background: #fee2e2; color: #ef4444; }
+
+.ver-stat-info .ver-stat-num {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+.ver-stat-info .ver-stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* Toolbar Card */
+.ver-toolbar-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 18px 22px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(15,23,42,0.03);
+    margin-bottom: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.ver-filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ver-filter-pill {
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ver-filter-pill:hover,
+.ver-filter-pill.active {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+}
+
+.ver-search-box {
+    position: relative;
+    min-width: 280px;
+}
+
+.ver-search-box input {
+    width: 100%;
+    padding: 9px 16px 9px 38px;
+    border-radius: 20px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    background: #f8fafc;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.ver-search-box input:focus {
+    background: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+
+.ver-search-box i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* Verification Cards */
+.ver-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.ver-item-card {
+    background: #ffffff;
+    border-radius: 22px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(15,23,42,0.05);
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
+.ver-item-card:hover {
+    box-shadow: 0 16px 36px rgba(15,23,42,0.08);
+    border-color: #cbd5e1;
+}
+
+/* Top user details header */
+.ver-card-top {
+    padding: 22px 28px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ver-user-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ver-user-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.ver-user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ver-user-text h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 2px;
+}
+
+.ver-user-text p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+}
+
+.ver-status-pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ver-status-pill.approved { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+.ver-status-pill.pending { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+.ver-status-pill.rejected { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+/* 4-Document Grid */
+.ver-card-body {
+    padding: 24px 28px;
+}
+
+.ver-sub-info-row {
+    display: flex;
+    gap: 24px;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 18px;
+}
+
+.ver-sub-info-row strong {
+    color: #0f172a;
+}
+
+.documents-4-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.doc-tile {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.doc-tile:hover {
+    border-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37,99,235,0.08);
+}
+
+.doc-tile .doc-img-wrap {
+    height: 150px;
+    background: #e2e8f0;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.doc-tile .doc-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.doc-tile:hover .doc-img-wrap img {
+    transform: scale(1.04);
+}
+
+.doc-tile .doc-label-bar {
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* Card Actions */
+.ver-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-approve-ver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #16a34a;
+    color: #ffffff !important;
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(22,163,74,0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-approve-ver:hover {
+    background: #15803d;
+    transform: translateY(-1px);
+}
+
+.btn-reject-ver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f59e0b;
+    color: #ffffff !important;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-reject-ver:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+}
+
+.btn-delete-ver {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fef2f2;
+    color: #ef4444 !important;
+    border: 1px solid #fecaca;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-delete-ver:hover {
+    background: #ef4444;
+    color: #ffffff !important;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .documents-4-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .ver-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .documents-4-grid {
+        grid-template-columns: 1fr;
+    }
+    .ver-stats-row {
+        grid-template-columns: 1fr;
+    }
+    .ver-card-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .ver-card-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-approve-ver, .btn-reject-ver, .btn-delete-ver {
+        justify-content: center;
+    }
+}

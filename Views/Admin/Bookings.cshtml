@@ -1,0 +1,345 @@
+@model IEnumerable<CarRentalSystem.Models.Booking>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var totalRevenue = Model.Sum(x => x.TotalAmount);
+    var totalBookings = Model.Count();
+    var confirmedBookings = Model.Count(x => x.Status == "Paid" || x.Status == "Confirmed" || x.Status == "Active");
+    var pendingBookings = Model.Count(x => x.Status == "Pending");
+}
+
+<link href="~/css/bookings.css" rel="stylesheet" asp-append-version="true" />
+
+<div class="admin-bookings-page">
+
+    <!-- PAGE HEADER -->
+    <div class="bookings-page-header">
+        <div>
+            <div class="header-pill">
+                <i class="fa fa-receipt text-primary"></i>
+                <span>Financial & Reservation Control</span>
+            </div>
+            <h1 class="header-title">Booking & Revenue Reports</h1>
+            <p class="header-subtitle">Track, filter, and audit all customer car rental reservations and live payments.</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <a href="/Admin/ManageCar" class="btn-bookings-action">
+                <i class="fa fa-car-side"></i> Rental Inventory
+            </a>
+            <a href="/Admin/Dashboard" class="btn-bookings-outline">
+                <i class="fa fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- 4-METRIC EXECUTIVE KPI ROW -->
+    <div class="bookings-kpi-grid">
+
+        <div class="bk-kpi-card">
+            <div class="bk-kpi-header">
+                <div class="bk-kpi-icon revenue">
+                    <i class="fa fa-indian-rupee-sign"></i>
+                </div>
+                <span class="bk-badge success">Stripe Verified</span>
+            </div>
+            <div class="bk-kpi-label">Gross Rental Revenue</div>
+            <div class="bk-kpi-value">₹@totalRevenue.ToString("N0")</div>
+            <p class="bk-kpi-meta"><i class="fa fa-arrow-trend-up text-success me-1"></i> Cumulative customer booking revenue</p>
+        </div>
+
+        <div class="bk-kpi-card">
+            <div class="bk-kpi-header">
+                <div class="bk-kpi-icon bookings">
+                    <i class="fa fa-calendar-check"></i>
+                </div>
+                <span class="bk-badge primary">All Time</span>
+            </div>
+            <div class="bk-kpi-label">Total Reservations</div>
+            <div class="bk-kpi-value">@totalBookings <span class="sub-unit">Trips</span></div>
+            <p class="bk-kpi-meta"><i class="fa fa-circle-check text-primary me-1"></i> Processed via portal checkout</p>
+        </div>
+
+        <div class="bk-kpi-card">
+            <div class="bk-kpi-header">
+                <div class="bk-kpi-icon confirmed">
+                    <i class="fa fa-shield-check"></i>
+                </div>
+                <span class="bk-badge success">Active</span>
+            </div>
+            <div class="bk-kpi-label">Confirmed / Paid</div>
+            <div class="bk-kpi-value">@confirmedBookings <span class="sub-unit">Active</span></div>
+            <p class="bk-kpi-meta"><i class="fa fa-check text-success me-1"></i> Ready for pickup or on trip</p>
+        </div>
+
+        <div class="bk-kpi-card">
+            <div class="bk-kpi-header">
+                <div class="bk-kpi-icon gateway">
+                    <i class="fa-brands fa-stripe"></i>
+                </div>
+                <span class="bk-badge warning">@pendingBookings Pending</span>
+            </div>
+            <div class="bk-kpi-label">Payment Gateway</div>
+            <div class="bk-kpi-value text-primary">Stripe <span class="sub-unit">Live</span></div>
+            <p class="bk-kpi-meta"><i class="fa fa-lock text-primary me-1"></i> End-to-end encrypted processing</p>
+        </div>
+
+    </div>
+
+    <!-- SEARCH & FILTER TOOLBAR -->
+    <div class="bookings-toolbar-card">
+        <div class="filter-chips-wrapper">
+            <button type="button" class="bk-chip active" onclick="filterBookings('all', this)">
+                <i class="fa fa-layer-group"></i> All (@totalBookings)
+            </button>
+            <button type="button" class="bk-chip" onclick="filterBookings('paid', this)">
+                <i class="fa fa-circle-check text-success"></i> Confirmed & Paid (@confirmedBookings)
+            </button>
+            <button type="button" class="bk-chip" onclick="filterBookings('pending', this)">
+                <i class="fa fa-clock text-warning"></i> Pending (@pendingBookings)
+            </button>
+            <button type="button" class="bk-chip" onclick="filterBookings('cancelled', this)">
+                <i class="fa fa-circle-xmark text-danger"></i> Cancelled (@Model.Count(x => x.Status == "Cancelled"))
+            </button>
+        </div>
+
+        <div class="bk-search-box">
+            <i class="fa fa-magnifying-glass"></i>
+            <input type="text"
+                   id="bookingSearchInput"
+                   placeholder="Search by customer, booking ref, vehicle..."
+                   oninput="searchBookings(this.value)" />
+        </div>
+    </div>
+
+    <!-- BOOKINGS STREAM GRID -->
+    @if (!Model.Any())
+    {
+        <div class="empty-bookings-state">
+            <div class="empty-icon-box">
+                <i class="fa fa-calendar-xmark"></i>
+            </div>
+            <h3>No Reservations Found</h3>
+            <p>No customer reservations have been placed yet. New bookings will automatically appear here in real-time.</p>
+        </div>
+    }
+    else
+    {
+        <div class="bookings-cards-grid" id="bookingsContainer">
+            @foreach (var item in Model)
+            {
+                var rawStatus = (item.Status ?? "Confirmed").ToLower();
+                string statusBadgeClass = "confirmed";
+                string statusLabel = item.Status ?? "Confirmed";
+
+                if (rawStatus == "paid" || rawStatus == "completed")
+                {
+                    statusBadgeClass = "paid";
+                    statusLabel = "Paid & Confirmed";
+                }
+                else if (rawStatus == "pending")
+                {
+                    statusBadgeClass = "pending";
+                    statusLabel = "Pending Payment";
+                }
+                else if (rawStatus == "cancelled")
+                {
+                    statusBadgeClass = "cancelled";
+                    statusLabel = "Cancelled";
+                }
+
+                <div class="booking-dossier-card"
+                     data-status="@rawStatus"
+                     data-ref="#bk-@item.Id"
+                     data-customer="@(item.User?.FullName?.ToLower() ?? "")"
+                     data-email="@(item.User?.Email?.ToLower() ?? "")"
+                     data-car="@(item.Car?.CarName?.ToLower() ?? "")"
+                     data-model="@(item.Car?.CarModel?.ToLower() ?? "")">
+
+                    <!-- Top Ref & Status Row -->
+                    <div class="dossier-header">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="ref-pill">
+                                <i class="fa fa-hashtag text-primary"></i> BK-@item.Id
+                            </span>
+                            <span class="date-chip">
+                                <i class="fa fa-calendar-day me-1"></i> @item.BookingDate.ToString("dd MMM yyyy")
+                            </span>
+                        </div>
+
+                        <span class="dossier-status-pill @statusBadgeClass">
+                            <i class="fa fa-circle-dot"></i> @statusLabel
+                        </span>
+                    </div>
+
+                    <!-- Middle Grid: Vehicle on Left, Customer on Right -->
+                    <div class="dossier-body-grid">
+
+                        <!-- Vehicle Mini Showcase -->
+                        <div class="vehicle-snippet">
+                            <div class="vehicle-thumb">
+                                @if (item.Car?.CarImage != null && item.Car.CarImage.Length > 0)
+                                {
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Car.CarImage)" alt="@(item.Car?.CarName ?? "Car")" />
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/200x130?text=Car+Image" alt="Car" />
+                                }
+                            </div>
+                            <div class="vehicle-meta">
+                                <h4>@(item.Car?.CarName ?? "Vehicle Reservation")</h4>
+                                <div class="vehicle-sub">
+                                    @(item.Car?.CarModel ?? "Executive") • @(string.IsNullOrEmpty(item.Car?.CarType) ? "Premium" : item.Car.CarType)
+                                </div>
+                                <div class="vehicle-reg">
+                                    <i class="fa fa-id-card text-muted me-1"></i> @(string.IsNullOrEmpty(item.Car?.RegistrationNumber) ? "Verified Unit" : item.Car.RegistrationNumber)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer Mini Card -->
+                        <div class="customer-snippet">
+                            <div class="customer-avatar-box">
+                                @(item.User?.FullName?.Substring(0, 1).ToUpper() ?? "U")
+                            </div>
+                            <div class="customer-details">
+                                <div class="customer-name">@(item.User?.FullName ?? "Registered Customer")</div>
+                                <div class="customer-contact">
+                                    <i class="fa fa-envelope text-primary me-1"></i> @(item.User?.Email ?? "No email")
+                                </div>
+                                @if (!string.IsNullOrEmpty(item.User?.PhoneNumber))
+                                {
+                                    <div class="customer-contact">
+                                        <i class="fa fa-phone text-success me-1"></i> @item.User.PhoneNumber
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Trip Details & Duration Strip -->
+                    <div class="trip-timeline-strip">
+                        <div class="trip-stop">
+                            <span class="stop-label"><i class="fa fa-circle text-primary me-1"></i> Pickup Date</span>
+                            <strong>@item.StartDate.ToString("dd MMM yyyy")</strong>
+                        </div>
+
+                        <div class="trip-duration-pill">
+                            <i class="fa fa-arrow-right"></i>
+                            <span>@item.TotalDays Day@(item.TotalDays > 1 ? "s" : "")</span>
+                        </div>
+
+                        <div class="trip-stop text-end">
+                            <span class="stop-label"><i class="fa fa-location-dot text-danger me-1"></i> Return Date</span>
+                            <strong>@item.EndDate.ToString("dd MMM yyyy")</strong>
+                        </div>
+                    </div>
+
+                    <!-- Location Station Details -->
+                    <div class="dossier-station-box">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <strong class="station-title">
+                                <i class="fa fa-warehouse text-primary me-1"></i>
+                                @(string.IsNullOrEmpty(item.PickupLocation) ? (item.Car?.PickupLocation ?? "Central Terminal Hub") : item.PickupLocation)
+                            </strong>
+                            @{
+                                var lat = item.Latitude ?? item.Car?.Latitude;
+                                var lng = item.Longitude ?? item.Car?.Longitude;
+                            }
+                            @if (lat.HasValue && lng.HasValue)
+                            {
+                                <a href="https://www.google.com/maps?q=@(lat.Value.ToString(System.Globalization.CultureInfo.InvariantCulture)),@(lng.Value.ToString(System.Globalization.CultureInfo.InvariantCulture))"
+                                   target="_blank" rel="noopener noreferrer" class="station-map-link">
+                                    <i class="fa fa-map-pin"></i> GPS
+                                </a>
+                            }
+                        </div>
+                        <p class="station-addr">
+                            @(item.Address ?? item.Car?.Address ?? "Station location on file.")
+                            @if (!string.IsNullOrEmpty(item.Landmark))
+                            {
+                                <span class="text-muted">• Near @item.Landmark</span>
+                            }
+                        </p>
+                    </div>
+
+                    <!-- Footer: Amount and Invoice Action -->
+                    <div class="dossier-footer">
+                        <div class="total-amount-box">
+                            <span class="amount-label">Total Booking Amount</span>
+                            <div class="amount-number">₹@item.TotalAmount.ToString("N0")</div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="/User/Receipt?bookingId=@item.Id" target="_blank" class="btn-dossier-invoice" title="View Customer Invoice">
+                                <i class="fa fa-file-invoice"></i> View Invoice
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+    }
+
+</div>
+
+<!-- Interactive Client-side Filter Script -->
+<script>
+let currentFilter = 'all';
+let currentSearch = '';
+
+function filterBookings(status, btn) {
+    currentFilter = status.toLowerCase();
+    document.querySelectorAll('.bk-chip').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    applyBookingsFilter();
+}
+
+function searchBookings(val) {
+    currentSearch = val.toLowerCase().trim();
+    applyBookingsFilter();
+}
+
+function applyBookingsFilter() {
+    const cards = document.querySelectorAll('.booking-dossier-card');
+    cards.forEach(card => {
+        const status = card.dataset.status || '';
+        const ref = card.dataset.ref || '';
+        const customer = card.dataset.customer || '';
+        const email = card.dataset.email || '';
+        const car = card.dataset.car || '';
+        const model = card.dataset.model || '';
+
+        // Status match
+        let matchesStatus = false;
+        if (currentFilter === 'all') {
+            matchesStatus = true;
+        } else if (currentFilter === 'paid') {
+            matchesStatus = (status === 'paid' || status === 'confirmed' || status === 'active');
+        } else if (currentFilter === 'pending') {
+            matchesStatus = (status === 'pending');
+        } else if (currentFilter === 'cancelled') {
+            matchesStatus = (status === 'cancelled');
+        }
+
+        // Search match
+        let matchesSearch = true;
+        if (currentSearch) {
+            matchesSearch = ref.includes(currentSearch) ||
+                            customer.includes(currentSearch) ||
+                            email.includes(currentSearch) ||
+                            car.includes(currentSearch) ||
+                            model.includes(currentSearch);
+        }
+
+        if (matchesStatus && matchesSearch) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+</script>
